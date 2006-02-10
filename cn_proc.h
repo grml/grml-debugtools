@@ -27,7 +27,8 @@
 
 #include <linux/types.h>
 #include <linux/time.h>
-#include <linux/connector.h>
+// FIXME temporary fix for header problem
+#include "connector.h"
 
 /*
  * Userspace sends this enum to register with the kernel that it is listening
