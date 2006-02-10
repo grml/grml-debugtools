@@ -258,7 +258,7 @@ void eventFork(struct nlmsghdr *hdr)
 {
     struct cn_msg *msg = (struct cn_msg *)NLMSG_DATA(hdr);
     struct proc_event *ev = (struct proc_event *)msg->data;
-    unsigned cpuid=0, ppid, ptgid, cpid, ctgid;
+    unsigned ppid, ptgid, cpid, ctgid;
     prozess *tp = NULL;
 
     ppid  = ev->event_data.fork.parent_pid;
@@ -289,7 +289,7 @@ void eventExec(struct nlmsghdr *hdr)
 {
     struct cn_msg *msg = (struct cn_msg *)NLMSG_DATA(hdr);
     struct proc_event *ev = (struct proc_event *)msg->data;
-    unsigned cpuid=0, ppid, ptgid;
+    unsigned ppid, ptgid;
     prozess *tp = NULL;
 
     ppid = ev->event_data.exec.process_pid;
@@ -315,7 +315,7 @@ void eventUid(struct nlmsghdr *hdr)
 {
     struct cn_msg *msg = (struct cn_msg *)NLMSG_DATA(hdr);
     struct proc_event *ev = (struct proc_event *)msg->data;
-    unsigned cpuid=0, ppid, ptgid, ruid, euid;
+    unsigned ppid, ptgid, ruid, euid;
     prozess *tp = NULL;
 
     ppid = ev->event_data.id.process_pid;
@@ -342,7 +342,7 @@ void eventGid(struct nlmsghdr *hdr)
 {
     struct cn_msg *msg = (struct cn_msg *)NLMSG_DATA(hdr);
     struct proc_event *ev = (struct proc_event *)msg->data;
-    unsigned cpuid=0, ppid, ptgid, rgid, egid;
+    unsigned ppid, ptgid, rgid, egid;
     prozess *tp = NULL;
 
     ppid = ev->event_data.id.process_pid;
@@ -369,7 +369,7 @@ void eventExit(struct nlmsghdr *hdr)
 {
     struct cn_msg *msg = (struct cn_msg *)NLMSG_DATA(hdr);
     struct proc_event *ev = (struct proc_event *)msg->data;
-    unsigned cpuid=0, ppid, ptgid, ec, es;
+    unsigned ppid, ptgid, ec, es;
     prozess *tp = NULL;
 
     ppid = ev->event_data.exit.process_pid;

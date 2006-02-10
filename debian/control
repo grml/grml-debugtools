@@ -1,0 +1,15 @@
+Source: grml-debugtools
+Section: grml
+Priority: optional
+Maintainer: Michael Gebetsroither <gebi@grml.org>
+Build-Depends: debhelper (>= 4.0.0), libglib2.0-dev, libboost-dev, libstdc++-dev
+Standards-Version: 3.6.2
+
+Package: grml-debugtools
+Architecture: all
+Depends: ${shlibs:Depends}
+Description: Various debug related tools
+ This tools helped us many times to track down complicated problems
+ sh-wrapper - wrapper for /bin/sh which logs infos about caller to syslog
+ event-viewer - programm to see all fork/exec/exit/uid/gid events
+
