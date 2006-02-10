@@ -32,7 +32,7 @@ event-viewer: event-viewer.cpp
 	$(CXX) $(CPPFLAGS) `pkg-config --cflags glib-2.0` $(LDFLAGS) `pkg-config --libs glib-2.0` event-viewer.cpp -o event-viewer
 
 clean: $(SUBDIRS)
-	rm -f $(PROGS) *~ *.o *.so
+	rm -f $(PROGS) *.o *.so
 
 
 install: $(PROGS)
