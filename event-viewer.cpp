@@ -22,7 +22,12 @@
 #include <sys/types.h>      /* fork(), open(), waitpid(), IPC */
 
 #include <linux/netlink.h>
-#include <linux/cn_proc.h>
+// FIXME temporary fix because of header problem
+//#include <linux/cn_proc.h>
+#include "cn_proc.h"    // local version of cn_proc.h (guarded)
+#ifndef NETLINK_CONNECTOR
+#define NETLINK_CONNECTOR   11
+#endif
 
 
 using std::map;
