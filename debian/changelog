@@ -1,9 +1,10 @@
 grml-debugtools (0.02) unstable; urgency=low
 
   * fixed dependencies
-  * source cleanups 
+  * source cleanups
+  * debian packaging fixes 
 
- -- Michael Gebetsroither <michael.geb@gmx.at>  Sat, 11 Feb 2006 04:32:56 +0100
+ -- Michael Gebetsroither <michael.geb@gmx.at>  Sat, 11 Feb 2006 13:21:45 +0100
 
 grml-debugtools (0.01) unstable; urgency=low
 
