@@ -1,8 +1,9 @@
 grml-debugtools (0.02) unstable; urgency=low
 
-  * fixed dependencies 
+  * fixed dependencies
+  * source cleanups 
 
- -- Michael Gebetsroither <michael.geb@gmx.at>  Sat, 11 Feb 2006 00:21:02 +0100
+ -- Michael Gebetsroither <michael.geb@gmx.at>  Sat, 11 Feb 2006 04:32:56 +0100
 
 grml-debugtools (0.01) unstable; urgency=low
 

@@ -1,3 +1,5 @@
+#include "process.h"
+
 #include <map>
 #include <string>
 #include <vector>
@@ -30,6 +32,8 @@
 #endif
 
 
+using gebi::process;
+
 using std::map;
 using std::vector;
 using std::string;
@@ -57,137 +61,9 @@ const unsigned PROC_EVENT_EXIT = 0x80000000;
 
 int sk_nl;   /* socket used by netlink */
 bool exit_now;  /* used by signal handler */
-class prozess;
-typedef map<unsigned, prozess*> pmap;
+class process;
+typedef map<unsigned, process*> pmap;
 pmap data_;
-
-
-class prozess
-{
-    private:
-        unsigned cpuid_;
-        unsigned pid_;
-        string exe_;
-        string name_;
-        vector<string> args_;
-        string nop_;
-
-        void init_priv()
-        {
-            exe_ = nop_;
-            name_ = nop_;
-            args_.clear();
-            cpuid_ = 0;
-            pid_ = 0;
-        }
-
-        void clear_priv()
-        {
-            unsigned tmppid = pid_;
-            init_priv();
-            pid_ = tmppid;
-        }
-
-        void searchExe_priv()
-        {
-            char *str = NULL;
-            GError *err = NULL;
-            string tmp;
-
-            // path to prozess binary
-            tmp.append("/proc/");
-            tmp.append(boost::lexical_cast<string>(pid_));
-            tmp.append("/exe");
-            str = g_file_read_link(tmp.c_str(), &err);
-            if(!str) {
-                //fprintf(stderr, "Error: %s (%d)\n", err->message, err->code);
-                g_error_free(err);
-                return;
-            }
-            exe_ = str;
-            FREE(str);
-        }
-
-        void searchCmdline_priv()
-        {
-            char *str = NULL;
-            char *tmpstr = NULL;
-            GError *err = NULL;
-            string tmp;
-            unsigned len = 0;
-
-            // get cmdline
-            tmp = "/proc/";
-            tmp.append(boost::lexical_cast<string>(pid_));
-            tmp.append("/cmdline");
-            if(!g_file_get_contents(tmp.c_str(), &str, &len, &err)) {
-                //fprintf(stderr, "Error: %s (%d)\n", err->message, err->code);
-                g_error_free(err);
-                return;
-            }
-
-            tmpstr = str;
-            //fprintf(stderr, "BEGIN\nstr=\"%s\" tmpstr=\"%s\"\n", str, tmpstr);
-            unsigned i = 0;
-            do {
-                unsigned tmplen;
-                args_.push_back(tmpstr);
-                tmplen = strlen(tmpstr) + 1;
-                i += tmplen;
-                tmpstr += tmplen;
-                //fprintf(stderr, "tmpstr=\"%s\" len=%d i=%d\n", tmpstr, tmplen, i);
-            } while(i < len);
-            name_ = args_.front();
-            args_.erase(args_.begin());
-            //fprintf(stderr, "len=%d strlen=%d cont=\"%s\"\nEND\n", len, strlen(str), str);
-            tmpstr = NULL;
-            FREE(str);
-        }
-
-
-    public:
-        prozess() { nop_ = "<none>"; init_priv(); }
-        prozess(unsigned pid) { nop_ = "<none>"; init_priv(); pid_ = pid; }
-        ~prozess() {}
-
-        void print()
-        {
-            fprintf(stderr, "%d ", pid_);
-            fprintf(stderr, "%s ", exe_.c_str());
-            fprintf(stderr, "%s\n", name_.c_str());
-        }
-
-        void searchInfos()
-        {
-            clear_priv();
-            searchExe_priv();
-            searchCmdline_priv();
-        }
-
-        const string &getExe() { return exe_; }
-        const string &getName() { return name_; }
-        const string getArgs()
-        {
-            if(args_.empty())
-                return nop_;
-
-            string tmp;
-            for(unsigned i=0; i < args_.size(); i++) {
-                //printf("size=%d\n", args_[i].size());
-                tmp.append("\"");
-                tmp.append(args_[i]);
-                tmp.append("\"");
-                //tmp.append(boost::lexical_cast<string>(args_[i].size()));
-                if(i+1 < args_.size())
-                    tmp.append(" ");
-            }
-            //return *new string(tmp);
-            return string(tmp);
-        }
-
-        void setPid(unsigned pid) { pid_=pid; }
-        unsigned getPid(void) { return pid_; }
-};
 
 
 
@@ -264,14 +140,14 @@ void eventFork(struct nlmsghdr *hdr)
     struct cn_msg *msg = (struct cn_msg *)NLMSG_DATA(hdr);
     struct proc_event *ev = (struct proc_event *)msg->data;
     unsigned ppid, ptgid, cpid, ctgid;
-    prozess *tp = NULL;
+    process *tp = NULL;
 
     ppid  = ev->event_data.fork.parent_pid;
     ptgid = ev->event_data.fork.parent_tgid;
     cpid  = ev->event_data.fork.child_pid;
     ctgid = ev->event_data.fork.child_tgid;
     if(data_.find(ppid) == data_.end()) {
-        tp = new prozess(ppid);
+        tp = new process(ppid);
         tp->searchInfos();
         data_[ppid] = tp;
         tp = NULL;
@@ -285,7 +161,7 @@ void eventFork(struct nlmsghdr *hdr)
         printf("fork: %d exe=%s name=%s ppid=%d ptgid=%d - cpid=%d ctgid=%d\n",
             msg->seq, tp->getExe().c_str(), tp->getName().c_str(),
             ppid, ptgid, cpid, ctgid);
-    tp = new prozess(cpid);
+    tp = new process(cpid);
     tp->searchInfos();
     data_[cpid] = tp; 
 }
@@ -295,12 +171,12 @@ void eventExec(struct nlmsghdr *hdr)
     struct cn_msg *msg = (struct cn_msg *)NLMSG_DATA(hdr);
     struct proc_event *ev = (struct proc_event *)msg->data;
     unsigned ppid, ptgid;
-    prozess *tp = NULL;
+    process *tp = NULL;
 
     ppid = ev->event_data.exec.process_pid;
     ptgid = ev->event_data.exec.process_tgid;
     if(data_.find(ppid) == data_.end()) {
-        tp = new prozess(ppid);
+        tp = new process(ppid);
     } else {
         tp = data_[ppid];
     }
@@ -321,14 +197,14 @@ void eventUid(struct nlmsghdr *hdr)
     struct cn_msg *msg = (struct cn_msg *)NLMSG_DATA(hdr);
     struct proc_event *ev = (struct proc_event *)msg->data;
     unsigned ppid, ptgid, ruid, euid;
-    prozess *tp = NULL;
+    process *tp = NULL;
 
     ppid = ev->event_data.id.process_pid;
     ptgid = ev->event_data.id.process_tgid;
     ruid = ev->event_data.id.r.ruid;
     euid = ev->event_data.id.e.euid;
     if(data_.find(ppid) == data_.end()) {
-        tp = new prozess(ppid);
+        tp = new process(ppid);
         tp->searchInfos();
         data_[ppid] = tp;
     } else {
@@ -348,14 +224,14 @@ void eventGid(struct nlmsghdr *hdr)
     struct cn_msg *msg = (struct cn_msg *)NLMSG_DATA(hdr);
     struct proc_event *ev = (struct proc_event *)msg->data;
     unsigned ppid, ptgid, rgid, egid;
-    prozess *tp = NULL;
+    process *tp = NULL;
 
     ppid = ev->event_data.id.process_pid;
     ptgid = ev->event_data.id.process_tgid;
     rgid = ev->event_data.id.r.rgid;
     egid = ev->event_data.id.e.egid;
     if(data_.find(ppid) == data_.end()) {
-        tp = new prozess(ppid);
+        tp = new process(ppid);
         tp->searchInfos();
         data_[ppid] = tp;
     } else {
@@ -375,14 +251,14 @@ void eventExit(struct nlmsghdr *hdr)
     struct cn_msg *msg = (struct cn_msg *)NLMSG_DATA(hdr);
     struct proc_event *ev = (struct proc_event *)msg->data;
     unsigned ppid, ptgid, ec, es;
-    prozess *tp = NULL;
+    process *tp = NULL;
 
     ppid = ev->event_data.exit.process_pid;
     ptgid = ev->event_data.exit.process_tgid;
     ec = ev->event_data.exit.exit_code;
     es = ev->event_data.exit.exit_signal;
     if(data_.find(ppid) == data_.end()) {
-        tp = new prozess(ppid);
+        tp = new process(ppid);
         tp->searchInfos();
         data_[ppid] = tp;
     } else {

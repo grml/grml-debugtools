@@ -16,10 +16,10 @@ man8 = $(usr)/share/man/man8/
 #CPPFLAGS = -pipe -Wall -O2 -g3 -D_REENTRANT
 #CPPFLAGS = -pipe -Wall -O2 -s -DNDEBUG -funroll-loops -floop-optimize -march=i686 -mtune=i686 -pedantic
 
-WFLAGS += -Wall -Wshadow
+WFLAGS += -Wall -Wshadow `pkg-config --cflags glib-2.0`
 CFLAGS += -std=c99 $(WFLAGS)
 CPPFLAGS += $(WFLAGS)
-LDFLAGS = -s
+LDFLAGS += -s
 
 
 PROGS = sh-wrapper event-viewer
@@ -28,8 +28,10 @@ default: $(SUBDIRS) $(PROGS)
 sh-wrapper: sh-wrapper.c
 	$(CC) $(CFLAGS) $(LDFLAGS) sh-wrapper.c -o sh-wrapper
 
-event-viewer: event-viewer.cpp
-	$(CXX) $(CPPFLAGS) `pkg-config --cflags glib-2.0` $(LDFLAGS) `pkg-config --libs glib-2.0` event-viewer.cpp -o event-viewer
+process.o: process.h process.cpp
+
+event-viewer: event-viewer.cpp process.o
+	$(CXX) $(CPPFLAGS) `pkg-config --cflags glib-2.0` $(LDFLAGS) `pkg-config --libs glib-2.0` $^ -o event-viewer
 
 clean: $(SUBDIRS)
 	rm -f $(PROGS) *.o *.so
