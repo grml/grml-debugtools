@@ -1,3 +1,9 @@
+/*
+ * (c) Michael Gebetsroither <michael.geb@gmx.at>
+ * gpl version 2 or any later version
+ *
+ */
+
 #include "process.h"
 
 #include <map>
