@@ -1,0 +1,28 @@
+SH-WRAPPER(8)
+=============
+Michael Gebetsroither <michael.geb@gmx.at>
+
+
+NAME
+----
+sh-wrapper - wrapper for /bin/sh which logs infos about caller to syslog
+
+
+SYNOPSIS
+--------
+*sh-wrapper*
+
+
+DESCRIPTION
+-----------
+*sh-wrapper* is a wrapper for /bin/sh. The link /bin/sh is replaced by sh-wrapper and thus sh-wrapper could give various informations about scripts beeing executed.
+
+It's for such situation where it's difficult to bring an strace near the faulty program. sh-wrapper should just show whats going on there.
+
+This programm is deprecated by *event-viewer(8)* but nevertheless quite usefull in different situations.
+
+sh-wrapper is hardcoded for /bin/zsh as the system shell. This may change in future relases.
+
+SEE ALSO
+--------
+event-viewer(8)

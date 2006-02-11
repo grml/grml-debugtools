@@ -2,7 +2,7 @@ Source: grml-debugtools
 Section: grml
 Priority: optional
 Maintainer: Michael Gebetsroither <gebi@grml.org>
-Build-Depends: debhelper (>= 4.0.0), libglib2.0-dev, libboost-dev, libstdc++-dev
+Build-Depends: debhelper (>= 4.0.0), libglib2.0-dev, libboost-dev, libstdc++-dev, xsltproc, docbook-xsl, asciidoc
 Standards-Version: 3.6.2
 
 Package: grml-debugtools

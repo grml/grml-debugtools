@@ -1,0 +1,41 @@
+EVENT-VIEWER(8)
+=============
+Michael Gebetsroither <michael.geb@gmx.at>
+
+
+NAME
+----
+event-viewer - program to see all fork/exec/exit/uid/gid events on a running system
+
+
+SYNOPSIS
+--------
+*event-viewer*
+
+
+DESCRIPTION
+-----------
+*event-viewer* uses the new netlink/fork connector interface from linux >=2.6.15.
+event-viewer thus get all fork/exec/exit/uid/gid events.
+This is a 'really' nice debug tool und safed us many sleepless hours.
+
+
+KERNEL REQUIREMENTS
+-------------------
+linux version >=2.6.15.
+
+The following kernel options should be set to get event-viewer to work.
+
+It is *NOT* sufficed to set the options to m (module), they have to be compiled into the kernel.
+..................
+#
+# Connector - unified userspace <-> kernelspace linker
+#
+CONFIG_CONNECTOR=y
+CONFIG_PROC_EVENTS=y
+..................
+
+
+SEE ALSO
+--------
+sh-wrapper(8)

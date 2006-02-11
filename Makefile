@@ -2,6 +2,7 @@ CXX = g++
 CC = gcc
 
 install_ = install
+name_ = grml-debugtools
 
 etc = ${DESTDIR}/etc/
 bin = ${DESTDIR}/bin
@@ -22,8 +23,31 @@ CPPFLAGS += $(WFLAGS)
 LDFLAGS += -s
 
 
+%.html : %.txt ;
+	asciidoc -b xhtml11 $^
+
+%.gz : %.txt ;
+	asciidoc -d manpage -b docbook $^
+	sed -i 's/<emphasis role="strong">/<emphasis role="bold">/g' `echo $^ |sed -e 's/.txt/.xml/'`
+	xsltproc /usr/share/xml/docbook/stylesheet/nwalsh/manpages/docbook.xsl `echo $^ |sed -e 's/.txt/.xml/'`
+	gzip -f --best `echo $^ |sed -e 's/.txt//'`
+
+
 PROGS = sh-wrapper event-viewer
-default: $(SUBDIRS) $(PROGS)
+bin: $(PROGS)
+
+default: bin doc
+
+doc: doc_man doc_html
+
+doc_html: sh-wrapper.8.html event-viewer.8.html
+sh-wrapper.8.html: sh-wrapper.8.txt
+event-viewer.8.html: event-viewer.8.txt
+
+doc_man: sh-wrapper.8.gz event-viewer.8.gz
+sh-wrapper.8.gz: sh-wrapper.8.txt
+event-viewer.8.gz: event-viewer.8.txt
+
 
 sh-wrapper: sh-wrapper.c
 	$(CC) $(CFLAGS) $(LDFLAGS) sh-wrapper.c -o sh-wrapper
@@ -33,14 +57,24 @@ process.o: process.h process.cpp
 event-viewer: event-viewer.cpp process.o
 	$(CXX) $(CPPFLAGS) `pkg-config --cflags glib-2.0` $(LDFLAGS) `pkg-config --libs glib-2.0` $^ -o event-viewer
 
-clean: $(SUBDIRS)
-	rm -f $(PROGS) *.o *.so
 
-
-install: $(PROGS)
+install: default
 	$(install_) -d -m 755 $(bin)
 	$(install_) -m 755 sh-wrapper $(bin)
 
 	$(install_) -d -m 755 $(usrsbin)
 	$(install_) -m 755 event-viewer $(usrsbin)
 
+	$(install_) -d -m 755 $(usrdoc)
+	$(install_) -m 644 sh-wrapper.8.html $(usrdoc)
+	$(install_) -m 644 event-viewer.8.html $(usrdoc)
+	
+	$(install_) -d -m 755 $(man8)
+	$(install_) -m 644 sh-wrapper.8.gz $(man8)
+	$(install_) -m 644 event-viewer.8.gz $(man8)
+
+
+clean: $(SUBDIRS)
+	rm -f $(PROGS) *.o *.so \
+		sh-wrapper.8.html sh-wrapper.8.xml sh-wrapper.8.gz \
+		event-viewer.8.html event-viewer.8.xml event-viewer.8.gz
