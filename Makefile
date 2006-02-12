@@ -13,14 +13,18 @@ usrshare = $(usr)/share/$(name_)
 usrdoc = $(usr)/share/doc/$(name_)
 man8 = $(usr)/share/man/man8/
 
-
-#CPPFLAGS = -pipe -Wall -O2 -g3 -D_REENTRANT
 #CPPFLAGS = -pipe -Wall -O2 -s -DNDEBUG -funroll-loops -floop-optimize -march=i686 -mtune=i686 -pedantic
 
 WFLAGS += -Wall -Wshadow `pkg-config --cflags glib-2.0`
 CFLAGS += -std=c99 $(WFLAGS)
 CPPFLAGS += $(WFLAGS)
 LDFLAGS += -s
+
+ifdef DEBUG
+CPPFLAGS += -pipe -Wall -O2 -g3 -D_REENTRANT
+CFLAGS += $(CPPFLAGS)
+LDFLAGS =
+endif
 
 
 %.html : %.txt ;
@@ -33,21 +37,26 @@ LDFLAGS += -s
 	gzip -f --best `echo $^ |sed -e 's/.txt//'`
 
 
-PROGS = sh-wrapper event-viewer
+PROGS = sh-wrapper event-viewer bench
 bin: $(PROGS)
 
 default: bin doc
 
 doc: doc_man doc_html
 
-doc_html: sh-wrapper.8.html event-viewer.8.html
+doc_html: sh-wrapper.8.html event-viewer.8.html bench.1.html
 sh-wrapper.8.html: sh-wrapper.8.txt
 event-viewer.8.html: event-viewer.8.txt
+bench.1.html: bench.1.txt
 
-doc_man: sh-wrapper.8.gz event-viewer.8.gz
+doc_man: sh-wrapper.8.gz event-viewer.8.gz bench.1.gz
 sh-wrapper.8.gz: sh-wrapper.8.txt
 event-viewer.8.gz: event-viewer.8.txt
+bench.1.gz: bench.1.txt
 
+
+bench: bench.cpp /usr/lib/libmbench.a
+#	$(CXX) $(CPPFLAGS) $(LDFLAGS) bench.cpp -o bench /usr/lib/libmbench.a
 
 sh-wrapper: sh-wrapper.c
 	$(CC) $(CFLAGS) $(LDFLAGS) sh-wrapper.c -o sh-wrapper
@@ -61,6 +70,9 @@ event-viewer: event-viewer.cpp process.o
 install: default
 	$(install_) -d -m 755 $(bin)
 	$(install_) -m 755 sh-wrapper $(bin)
+
+	$(install_) -d -m 755 $(usrbin)
+	$(install_) -m 755 bench $(usrbin)
 
 	$(install_) -d -m 755 $(usrsbin)
 	$(install_) -m 755 event-viewer $(usrsbin)

@@ -1,0 +1,24 @@
+BENCH(1)
+========
+Michael Gebetsroither <michael.geb@gmx.at>
+
+
+NAME
+----
+bench - small program to see various benchmark related informations
+
+
+SYNOPSIS
+--------
+*bench* '<Programm to bench>'
+
+
+DESCRIPTION
+-----------
+*bench* is a program for benchmarking other programms.
+To measure syscall time use strace -c <prog>.
+
+
+SEE ALSO
+--------
+sh-wrapper(8), even-viewer(8), strace(1)
