@@ -12,6 +12,7 @@ usrsbin = $(usr)/sbin
 usrshare = $(usr)/share/$(name_)
 usrdoc = $(usr)/share/doc/$(name_)
 man8 = $(usr)/share/man/man8/
+man1 = $(usr)/share/man/man1/
 
 #CPPFLAGS = -pipe -Wall -O2 -s -DNDEBUG -funroll-loops -floop-optimize -march=i686 -mtune=i686 -pedantic
 
@@ -80,13 +81,18 @@ install: default
 	$(install_) -d -m 755 $(usrdoc)
 	$(install_) -m 644 sh-wrapper.8.html $(usrdoc)
 	$(install_) -m 644 event-viewer.8.html $(usrdoc)
+	$(install_) -m 644 bench.1.html $(usrdoc)
 	
 	$(install_) -d -m 755 $(man8)
 	$(install_) -m 644 sh-wrapper.8.gz $(man8)
 	$(install_) -m 644 event-viewer.8.gz $(man8)
 
+	$(install_) -d -m 755 $(man1)
+	$(install_) -m 644 bench.1.gz $(man1)
+
 
 clean: $(SUBDIRS)
 	rm -f $(PROGS) *.o *.so \
 		sh-wrapper.8.html sh-wrapper.8.xml sh-wrapper.8.gz \
-		event-viewer.8.html event-viewer.8.xml event-viewer.8.gz
+		event-viewer.8.html event-viewer.8.xml event-viewer.8.gz \
+		bench.1.html bench.1.xml bench.1.gz
