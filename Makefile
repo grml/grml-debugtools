@@ -25,6 +25,9 @@ ifdef DEBUG
 CPPFLAGS += -pipe -Wall -O2 -g3 -D_REENTRANT
 CFLAGS += $(CPPFLAGS)
 LDFLAGS =
+else
+CPPFLAGS += -pipe -O2
+CFLAGS += $(CPPFLAGS)
 endif
 
 
@@ -56,8 +59,8 @@ event-viewer.8.gz: event-viewer.8.txt
 bench.1.gz: bench.1.txt
 
 
-bench: bench.cpp /usr/lib/libmbench.a
-#	$(CXX) $(CPPFLAGS) $(LDFLAGS) bench.cpp -o bench /usr/lib/libmbench.a
+bench: bench.cpp
+#	$(CXX) $(CPPFLAGS) $(LDFLAGS) bench.cpp -o bench
 
 sh-wrapper: sh-wrapper.c
 	$(CC) $(CFLAGS) $(LDFLAGS) sh-wrapper.c -o sh-wrapper
