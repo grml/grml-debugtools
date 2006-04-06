@@ -47,9 +47,12 @@ OPTIONS:
    -h           this help text
 
 ACTIONS:
-   g, get       get grml development kernel from $URL
-   i, install   install all dowloaded kernelmodules (excludes in <kernel-version>.iignore)
-   l, load      load all available kernelmodules (limited by -l, <kernel-version>.lignore)
+   g, get       get grml development kernel from
+                    $URL
+   i, install   install all dowloaded kernelmodules
+                    (exclude patterns in <kernel-version>.iignore)
+   l, load      load all available kernelmodules (limited by -l, 
+                     exclude patterns in <kernel-version>.lignore)
    h, help      this help text
 
 EOT
