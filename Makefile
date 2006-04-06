@@ -41,10 +41,10 @@ endif
 	gzip -f --best `echo $^ |sed -e 's/.txt//'`
 
 
+default: bin doc
+
 PROGS = sh-wrapper event-viewer bench
 bin: $(PROGS)
-
-default: bin doc
 
 doc: doc_man doc_html
 
