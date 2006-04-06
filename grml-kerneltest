@@ -1,0 +1,224 @@
+#!/usr/bin/zsh
+# Filename:      grml-ktest
+# Purpose:       Program to do something
+# Authors:       grml-team (grml.org), (c) Michael Gebetsroither <gebi@grml.org>
+# Bug-Reports:   see http://grml.org/bugs/
+# License:       This file is licensed under the GPL v2.
+# Latest change: Thu Apr  6 12:26:20 CEST 2006 [gebi]
+################################################################################
+
+###
+### __INCLUDES
+###
+. /etc/grml/sh-lib
+[ -z "$PS1" ] && . /etc/grml_nocolors || . /etc/grml_colors
+#. /etc/grml/sysexits-sh
+
+
+
+###
+### __VARIABLES
+###
+URL="http://dufo.tugraz.at/~prokop/grml-kernel/"
+KVERS=""
+EINSERT=""
+EREMOVE=""
+TMPFILE=""
+
+# args
+LIMIT_='false'
+LIMIT_ARG_='30'
+
+
+###
+### __FUNCTIONS
+###
+
+function printUsage
+{
+    cat <<EOT
+Usage: "$PROG_NAME__" [OPTIONS] action [kernel-version]
+
+$PROG_NAME__ is a kernel test tool
+
+OPTIONS:
+   -l           limit loaded modules to given number (default=$LIMIT_ARG_)
+   -c           activate terminal colors (default=activated on terminals)
+   -h           this help text
+
+ACTIONS:
+   g, get       get grml development kernel from $URL
+   i, install   install all dowloaded kernelmodules (excludes in <kernel-version>.iignore)
+   l, load      load all available kernelmodules (limited by -l, <kernel-version>.lignore)
+   h, help      this help text
+
+EOT
+}
+
+function extractURL
+{
+    cat |grep 'href="' |awk '/-grml/{print $6}' |sed -e 's/\">.*$//' -e 's/^href=\"//'
+}
+
+function filterURL
+{
+    cat |egrep -v 'linux-(doc|headers|source)'
+}
+
+function actionGet
+{
+    MODLIST=""
+    if [[ $KVERS == "false" ]]; then
+        die "please give me a kernel version, like 2.6.16-grml"
+    fi
+
+    INDEX="`curl $URL/$1/ 2>/dev/null`"
+    echo "$INDEX" |grep -i "404 Not Found" &>/dev/null && die "URL not found: $URL/$KVERS"
+    MODLIST="`echo "$INDEX" |extractURL |filterURL`"
+    echo "$MODLIST" >"$KVERS"
+
+    echo "Getting modules:"
+    echo "$MODLIST" |while read module; do
+        echo -n "$module: "
+        test -e "$module" && echo "${YELLOW}SKIPPED${NORMAL}" && continue
+        wget -q "$URL/$KVERS/$module" >/dev/null || echo "${RED}FAILED${NORMAL}" && \
+            echo "${GREEN}OK${NORMAL}"
+    done
+}
+
+function actionInstall
+{
+    echo "Installing modules:"
+    MODLIST="`grep linux-image "$KVERS"`"
+    MODLIST="${MODLIST} `grep -v "linux-image" "$KVERS"`"
+    test -e "$KVERS.iignore" && MODLIST="`echo "$MODLIST" |grep -vf "$KVERS.iignore"`"
+    echo "$MODLIST" |xargs -r dpkg -E -i
+}
+
+function getModName
+{
+    local tmp="${1##*/}"
+    echo "${tmp%.ko}"
+}
+
+function loadUnloadModule
+{
+    if [[ $1 == "" ]]; then
+        return 0
+    fi
+    
+    local MODULE="`getModName ${1%%:*}`"
+    local line="${1/:/ }"
+    local lines=""
+    local einsert="false"
+    local eremove="false"
+
+    lines="`echo "$line" |xargs -n1`"
+
+    # remove modules for safety
+    echo "$lines" |while read module; do
+        rmmod "$module" &>/dev/null
+    done
+
+    echo -n "$MODULE: loading-> "
+    echo "$lines" |tac |while read module; do
+        echo -n "`getModName "$module"` "
+        insmod $module 2>$TMPFILE
+        if [[ $? == 0 ]]; then
+            echo -n "${GREEN}OK${NORMAL}; "
+            echo -n "" >$TMPFILE
+        else
+            if egrep "(: -1 File exists)|(-1 No such device)" $TMPFILE &>/dev/null; then
+                echo -n "${GREEN}OK${NORMAL}; "
+            else
+                cat "$TMPFILE" >>$EINSERT
+                einsert='true'
+                echo -n "${RED}FAILED${NORMAL}; "
+            fi
+        fi
+    done
+    
+    echo -n " removing-> "
+    echo "$lines" |while read module; do
+        echo -n "`getModName "$module"` "
+        rmmod "$module" 2>$TMPFILE
+        if (( $? == 0 )); then
+            echo -n "${GREEN}OK${NORMAL}; "
+            echo -n "" >$TMPFILE
+        else
+            if egrep "(does not exist in /proc/modules)|(is in use by)" $TMPFILE &>/dev/null; then
+                echo -n "${GREEN}OK${NORMAL}; "
+            else
+                cat "$TMPFILE" >>$EREMOVE
+                eremove='true'
+                echo -n "${RED}FAILED${NORMAL}; "
+            fi
+        fi
+    done
+    echo
+    $einsert && ( echo "Errors at insert: "; cat $EINSERT )
+    $eremove && ( echo "Errors at remove: "; cat $EREMOVE )
+    echo -n "" >$EINSERT
+    echo -n "" >$EREMOVE
+    echo
+}
+
+function actionLoad
+{
+    KVERS="`uname -r`"
+    EINSERT="`mktemp -t grml-kerneltest_einsert.XXXXXX`"
+    EREMOVE="`mktemp -t grml-kerneltest_eremove.XXXXXX`"
+    TMPFILE="`mktemp -t grml-kerneltest_tmp.XXXXXX`"
+    echo "Loading modules:"
+    local moddep="/lib/modules/$KVERS/modules.dep"
+    test -e "$moddep" || die "$moddep not found"
+    if [[ $LIMIT_ == "true" ]]; then
+        test -e "${KVERS}.lignore" && \
+            MODLIST="`cat "$moddep" |grep -vf "${KVERS}.lignore" |head -n $LIMIT_ARG_`" || \
+            MODLIST="`cat "$moddep" |head -n $LIMIT_ARG_`"
+    else
+        MODLIST="`cat "$moddep"`"
+    fi
+    echo "$MODLIST" |while read module; do
+        loadUnloadModule "$module"
+    done
+    rm -f "$EINSERT" "$EREMOVE" "$TMPFILE"
+}
+
+
+###
+### __MAIN
+###
+
+PROG_NAME__="`basename $0`"
+while getopts "l:ch" opt; do
+    case "$opt" in
+        l) LIMIT_='true'; LIMIT_ARG_="$OPTARG" ;;
+        c) . /etc/grml_colors ;;
+        h) printUsage; exit 0 ;;
+        ?) printUsage; exit 64 ;;
+    esac
+done
+shift $(($OPTIND - 1))
+disableSyslog
+
+KVERS="${2:-false}"
+case "$1" in
+    l|load) actionLoad "$KVERS" && exit $?;;
+    h|help) printUsage; exit 0 ;;
+    "") printUsage; exit 1 ;;
+esac
+
+if [[ $KVERS == "false" ]]; then
+    die "please give me a kernel version, like 2.6.16-grml"
+fi
+
+case "$1" in
+    g|get) actionGet "$2" ;;
+    i|install) actionInstall "$2" ;;
+    *) echo "unknown action" ;;
+esac
+
+# END OF FILE
+################################################################################
+# vim: filetype=sh

@@ -7,7 +7,7 @@ Standards-Version: 3.6.2
 
 Package: grml-debugtools
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, grml-shlib (>= 1.02.07), zsh, curl, grml-etc (>= 0.7-3)
 Description: Various debug related tools
  This tools help in tracking down complicated problems:
  sh-wrapper - wrapper for /bin/sh which logs information about caller to syslog
