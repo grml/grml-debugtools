@@ -1,11 +1,11 @@
 BENCH(1)
 ========
-Michael Gebetsroither <michael.geb@gmx.at>
+Michael Gebetsroither <gebi@grml.org>
 
 
 NAME
 ----
-bench - small program to see various benchmark related informations
+bench - small program to see various benchmark related information
 
 
 SYNOPSIS

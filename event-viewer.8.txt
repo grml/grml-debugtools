@@ -1,6 +1,6 @@
 EVENT-VIEWER(8)
 =============
-Michael Gebetsroither <michael.geb@gmx.at>
+Michael Gebetsroither <gebi@grml.org>
 
 
 NAME
@@ -16,17 +16,16 @@ SYNOPSIS
 DESCRIPTION
 -----------
 *event-viewer* uses the new netlink/fork connector interface from linux >=2.6.15.
-event-viewer thus get all fork/exec/exit/uid/gid events.
-This is a 'really' nice debug tool und safed us many sleepless hours.
+event-viewer thus receives all fork/exec/exit/uid/gid events.
 
 
 KERNEL REQUIREMENTS
 -------------------
 linux version >=2.6.15.
 
-The following kernel options should be set to get event-viewer to work.
+The following kernel options should be set to be able to use event-viewer.
 
-It is *NOT* sufficed to set the options to m (module), they have to be compiled into the kernel.
+It is *NOT* sufficed to set the options to m (module) - they have to be compiled into the kernel.
 ..................
 #
 # Connector - unified userspace <-> kernelspace linker

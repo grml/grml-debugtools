@@ -3,4 +3,4 @@ grml-debugtools for Debian
 
 event-viewer does only work with kernels >=2.6.15 and fork connector compiled in
 
- -- Michael Gebetsroither <michael.geb@gmx.at>, Fri, 10 Feb 2006 23:14:23 +0100
+ -- Michael Gebetsroither <gebi@grml.org>, Fri, 10 Feb 2006 23:14:23 +0100
