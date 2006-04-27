@@ -17,6 +17,7 @@
 #include <glib/gstdio.h>
 
 #include <boost/lexical_cast.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include <stdio.h>
 #include <stdlib.h>     /* exit() */
@@ -47,6 +48,8 @@ using std::ifstream;
 using std::cin;
 using std::cout;
 
+using boost::shared_ptr;
+
 #define MESSAGE_SIZE    (sizeof(struct nlmsghdr) + \
                          sizeof(struct cn_msg)   + \
                          sizeof(int))
@@ -65,10 +68,12 @@ const unsigned PROC_EVENT_GID  = 0x00000040;
 const unsigned PROC_EVENT_EXIT = 0x80000000;
 
 
+class process;
+typedef shared_ptr<process> process_ptr;
+typedef map<unsigned, process_ptr> pmap;
+
 int sk_nl;   /* socket used by netlink */
 bool exit_now;  /* used by signal handler */
-class process;
-typedef map<unsigned, process*> pmap;
 pmap data_;
 
 
@@ -146,19 +151,20 @@ void eventFork(struct nlmsghdr *hdr)
     struct cn_msg *msg = (struct cn_msg *)NLMSG_DATA(hdr);
     struct proc_event *ev = (struct proc_event *)msg->data;
     unsigned ppid, ptgid, cpid, ctgid;
-    process *tp = NULL;
+    process_ptr tp;
 
     ppid  = ev->event_data.fork.parent_pid;
     ptgid = ev->event_data.fork.parent_tgid;
     cpid  = ev->event_data.fork.child_pid;
     ctgid = ev->event_data.fork.child_tgid;
     if(data_.find(ppid) == data_.end()) {
-        tp = new process(ppid);
-        tp->searchInfos();
-        data_[ppid] = tp;
-        tp = NULL;
+        process_ptr tmp(new process(ppid));
+        tmp->searchInfos();
+        data_[ppid] = tmp;
+        tp = tmp;
+    } else {
+        tp = data_[ppid];
     }
-    tp = data_[ppid];
     if(tp->getExe() == tp->getName())
         printf("fork: %d exe=%s ppid=%d ptgid=%d - cpid=%d ctgid=%d\n",
             msg->seq, tp->getExe().c_str(),
@@ -167,9 +173,9 @@ void eventFork(struct nlmsghdr *hdr)
         printf("fork: %d exe=%s name=%s ppid=%d ptgid=%d - cpid=%d ctgid=%d\n",
             msg->seq, tp->getExe().c_str(), tp->getName().c_str(),
             ppid, ptgid, cpid, ctgid);
-    tp = new process(cpid);
-    tp->searchInfos();
-    data_[cpid] = tp; 
+    process_ptr tmp(new process(cpid));
+    tmp->searchInfos();
+    data_[cpid] = tmp; 
 }
 
 void eventExec(struct nlmsghdr *hdr)
@@ -177,12 +183,13 @@ void eventExec(struct nlmsghdr *hdr)
     struct cn_msg *msg = (struct cn_msg *)NLMSG_DATA(hdr);
     struct proc_event *ev = (struct proc_event *)msg->data;
     unsigned ppid, ptgid;
-    process *tp = NULL;
+    process_ptr tp;
 
     ppid = ev->event_data.exec.process_pid;
     ptgid = ev->event_data.exec.process_tgid;
     if(data_.find(ppid) == data_.end()) {
-        tp = new process(ppid);
+        process_ptr tmp(new process(ppid));
+        tp = tmp;
     } else {
         tp = data_[ppid];
     }
@@ -203,16 +210,17 @@ void eventUid(struct nlmsghdr *hdr)
     struct cn_msg *msg = (struct cn_msg *)NLMSG_DATA(hdr);
     struct proc_event *ev = (struct proc_event *)msg->data;
     unsigned ppid, ptgid, ruid, euid;
-    process *tp = NULL;
+    process_ptr tp;
 
     ppid = ev->event_data.id.process_pid;
     ptgid = ev->event_data.id.process_tgid;
     ruid = ev->event_data.id.r.ruid;
     euid = ev->event_data.id.e.euid;
     if(data_.find(ppid) == data_.end()) {
-        tp = new process(ppid);
-        tp->searchInfos();
-        data_[ppid] = tp;
+        process_ptr tmp(new process(ppid));
+        tmp->searchInfos();
+        data_[ppid] = tmp;
+        tp = tmp;
     } else {
         tp = data_[ppid];
     }
@@ -230,16 +238,17 @@ void eventGid(struct nlmsghdr *hdr)
     struct cn_msg *msg = (struct cn_msg *)NLMSG_DATA(hdr);
     struct proc_event *ev = (struct proc_event *)msg->data;
     unsigned ppid, ptgid, rgid, egid;
-    process *tp = NULL;
+    process_ptr tp;
 
     ppid = ev->event_data.id.process_pid;
     ptgid = ev->event_data.id.process_tgid;
     rgid = ev->event_data.id.r.rgid;
     egid = ev->event_data.id.e.egid;
     if(data_.find(ppid) == data_.end()) {
-        tp = new process(ppid);
-        tp->searchInfos();
-        data_[ppid] = tp;
+        process_ptr tmp(new process(ppid));
+        tmp->searchInfos();
+        data_[ppid] = tmp;
+        tp = tmp;
     } else {
         tp = data_[ppid];
     }
@@ -257,16 +266,17 @@ void eventExit(struct nlmsghdr *hdr)
     struct cn_msg *msg = (struct cn_msg *)NLMSG_DATA(hdr);
     struct proc_event *ev = (struct proc_event *)msg->data;
     unsigned ppid, ptgid, ec, es;
-    process *tp = NULL;
+    process_ptr tp;
 
     ppid = ev->event_data.exit.process_pid;
     ptgid = ev->event_data.exit.process_tgid;
     ec = ev->event_data.exit.exit_code;
     es = ev->event_data.exit.exit_signal;
     if(data_.find(ppid) == data_.end()) {
-        tp = new process(ppid);
-        tp->searchInfos();
-        data_[ppid] = tp;
+        process_ptr tmp(new process(ppid));
+        tmp->searchInfos();
+        data_[ppid] = tmp;
+        tp = tmp;
     } else {
         tp = data_[ppid];
     }
@@ -277,7 +287,6 @@ void eventExit(struct nlmsghdr *hdr)
         printf("exit: %d exe=%s name=%s pid=%d tgid=%d - exitcode=%d exitsignal=%d\n",
                 msg->seq, tp->getExe().c_str(), tp->getName().c_str(),
                 ppid, ptgid, ec, es);
-    delete data_[ppid];
     data_.erase(ppid);
 }
 
@@ -396,10 +405,9 @@ int main()
             recv_sk_nl(sk_nl);
     }
 
+    fflush(stdout);
     fprintf(stderr, "cleaning-up now: ");
     cn_fork_ignore(sk_nl);
-    for(pmap::iterator i = data_.begin(); i != data_.end(); i++)
-        delete((*i).second);
     data_.clear();
     fprintf(stderr, "done.\n");
 
