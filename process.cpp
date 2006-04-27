@@ -92,7 +92,7 @@ void process::searchCmdline_priv()
 }
 
 
-void process::print()
+void process::print() const
 {
     fprintf(stderr, "%d ", pid_);
     fprintf(stderr, "%s ", exe_.c_str());

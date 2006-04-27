@@ -27,7 +27,7 @@ class process
         process(unsigned pid) { init_priv(); pid_ = pid; }
         ~process() {}
 
-        void print();
+        void print() const;
         void searchInfos();
         const std::string &getExe() const { return exe_; }
         const std::string &getName() const { return name_; }
