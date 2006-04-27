@@ -1,3 +1,10 @@
+grml-debugtools (0.05) unstable; urgency=low
+
+  * few enhancements to event-viewer (using boost::shard_ptr, refactored
+    functions, ...)
+
+ -- Michael Gebetsroither <michael.geb@gmx.at>  Thu, 27 Apr 2006 20:41:36 +0200
+
 grml-debugtools (0.04) unstable; urgency=low
 
   * Fixed a few typos (patch from Michael Prokop <mika@grml.org>)

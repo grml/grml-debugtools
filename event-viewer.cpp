@@ -77,6 +77,17 @@ bool exit_now;  /* used by signal handler */
 pmap data_;
 
 
+process_ptr get_add_process(unsigned pid, bool update)
+{
+    if(data_.find(pid) == data_.end()) {
+        process_ptr tmp(new process(pid));
+        if(update)
+            tmp->searchInfos();
+        data_[pid] = tmp;
+        return tmp;
+    }
+    return data_[pid];
+}
 
  /* cn_fork_listen - {{{
  */
@@ -157,14 +168,8 @@ void eventFork(struct nlmsghdr *hdr)
     ptgid = ev->event_data.fork.parent_tgid;
     cpid  = ev->event_data.fork.child_pid;
     ctgid = ev->event_data.fork.child_tgid;
-    if(data_.find(ppid) == data_.end()) {
-        process_ptr tmp(new process(ppid));
-        tmp->searchInfos();
-        data_[ppid] = tmp;
-        tp = tmp;
-    } else {
-        tp = data_[ppid];
-    }
+    tp = get_add_process(ppid, true);
+
     if(tp->getExe() == tp->getName())
         printf("fork: %d exe=%s ppid=%d ptgid=%d - cpid=%d ctgid=%d\n",
             msg->seq, tp->getExe().c_str(),
@@ -187,13 +192,9 @@ void eventExec(struct nlmsghdr *hdr)
 
     ppid = ev->event_data.exec.process_pid;
     ptgid = ev->event_data.exec.process_tgid;
-    if(data_.find(ppid) == data_.end()) {
-        process_ptr tmp(new process(ppid));
-        tp = tmp;
-    } else {
-        tp = data_[ppid];
-    }
+    tp = get_add_process(ppid, false);
     tp->searchInfos();
+
     if(tp->getExe() == tp->getName())
         printf("exec: %d exe=%s args=\"%s\" pid=%d tgid=%d\n",
                 msg->seq, tp->getExe().c_str(), tp->getArgs().c_str(),
@@ -202,7 +203,6 @@ void eventExec(struct nlmsghdr *hdr)
         printf("exec: %d exe=%s name=%s args=\"%s\" pid=%d tgid=%d\n",
                 msg->seq, tp->getExe().c_str(), tp->getName().c_str(), tp->getArgs().c_str(),
                 ppid, ptgid);
-    data_[ppid] = tp;
 }
 
 void eventUid(struct nlmsghdr *hdr)
@@ -216,14 +216,8 @@ void eventUid(struct nlmsghdr *hdr)
     ptgid = ev->event_data.id.process_tgid;
     ruid = ev->event_data.id.r.ruid;
     euid = ev->event_data.id.e.euid;
-    if(data_.find(ppid) == data_.end()) {
-        process_ptr tmp(new process(ppid));
-        tmp->searchInfos();
-        data_[ppid] = tmp;
-        tp = tmp;
-    } else {
-        tp = data_[ppid];
-    }
+    tp = get_add_process(ppid, true);
+
     if(tp->getExe() == tp->getName())
         printf("uid: %d exe=%s pid=%d tgid=%d - ruid=%d euid=%d\n",
                 msg->seq, tp->getExe().c_str(), ppid, ptgid, ruid, euid);
@@ -244,14 +238,8 @@ void eventGid(struct nlmsghdr *hdr)
     ptgid = ev->event_data.id.process_tgid;
     rgid = ev->event_data.id.r.rgid;
     egid = ev->event_data.id.e.egid;
-    if(data_.find(ppid) == data_.end()) {
-        process_ptr tmp(new process(ppid));
-        tmp->searchInfos();
-        data_[ppid] = tmp;
-        tp = tmp;
-    } else {
-        tp = data_[ppid];
-    }
+    tp = get_add_process(ppid, true);
+
     if(tp->getExe() == tp->getName())
         printf("gid: %d exe=%s pid=%d tgid=%d - rgid=%d egid=%d\n",
                 msg->seq, tp->getExe().c_str(), ppid, ptgid, rgid, egid);
@@ -272,14 +260,8 @@ void eventExit(struct nlmsghdr *hdr)
     ptgid = ev->event_data.exit.process_tgid;
     ec = ev->event_data.exit.exit_code;
     es = ev->event_data.exit.exit_signal;
-    if(data_.find(ppid) == data_.end()) {
-        process_ptr tmp(new process(ppid));
-        tmp->searchInfos();
-        data_[ppid] = tmp;
-        tp = tmp;
-    } else {
-        tp = data_[ppid];
-    }
+    tp = get_add_process(ppid, true);
+
     if(tp->getExe() == tp->getName())
         printf("exit: %d exe=%s pid=%d tgid=%d - exitcode=%d exitsignal=%d\n",
                 msg->seq, tp->getExe().c_str(), ppid, ptgid, ec, es);
@@ -353,6 +335,7 @@ void termSig(int x)
 
 int main()
 {
+try {
     int err;
     struct sockaddr_nl sa_nl;   /* info for the netlink interface */
     fd_set fds;     /* file descriptor set */
@@ -401,8 +384,13 @@ int main()
             continue;
         }
 
-        if (FD_ISSET(sk_nl, &fds))
-            recv_sk_nl(sk_nl);
+        try {
+            if (FD_ISSET(sk_nl, &fds))
+                recv_sk_nl(sk_nl);
+        } catch (std::exception &e) {
+            fflush(stdout);
+            fprintf(stderr, "Exception cought: %s\n", e.what());
+        }
     }
 
     fflush(stdout);
@@ -410,6 +398,11 @@ int main()
     cn_fork_ignore(sk_nl);
     data_.clear();
     fprintf(stderr, "done.\n");
+
+} catch (std::exception &e) {
+    fflush(stdout);
+    fprintf(stderr, "Exception cought: %s\n", e.what());
+}
 
     return EXIT_SUCCESS;
 }

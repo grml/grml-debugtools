@@ -121,7 +121,6 @@ const string process::getArgs() const
         if(i+1 < args_.size())
             tmp.append(" ");
     }
-    //return *new string(tmp);
     return string(tmp);
 }
 
