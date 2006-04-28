@@ -24,6 +24,7 @@ void process::init_priv()
     exe_ = nop_;
     name_ = nop_;
     args_.clear();
+    args_length_ = 0;
     cpuid_ = 0;
     pid_ = 0;
 }
@@ -89,6 +90,7 @@ void process::searchCmdline_priv()
     //fprintf(stderr, "len=%d strlen=%d cont=\"%s\"\nEND\n", len, strlen(str), str);
     tmpstr = NULL;
     FREE(str);
+    args_length_ = len - name_.size()+1 - args_.size();
 }
 
 
@@ -112,6 +114,7 @@ const string process::getArgs() const
         return nop_;
 
     string tmp;
+    tmp.reserve(args_length_ + args_.size() * 3);
     for(unsigned i=0; i < args_.size(); i++) {
         //printf("size=%d\n", args_[i].size());
         tmp.append("\"");
@@ -121,7 +124,12 @@ const string process::getArgs() const
         if(i+1 < args_.size())
             tmp.append(" ");
     }
-    return string(tmp);
+    /*
+     fprintf(stderr, "getArgs(): args.size=%d, args_length_=%d, string.reserve=%d, \
+          string.size=%d, string.capacity=%d\n", args_.size(), args_length_,
+          args_length_ + args_.size() * 3, tmp.size(), tmp.capacity());
+     */
+    return tmp;
 }
 
 } // namespace 'gebi'

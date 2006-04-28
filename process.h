@@ -14,7 +14,8 @@ class process
         unsigned pid_;
         std::string exe_;
         std::string name_;
-        std::vector<std::string> args_;
+        std::vector<std::string> args_;     // command line args
+        std::string::size_type args_length_; // length of cmdline args
         std::string nop_;
 
         void init_priv();
