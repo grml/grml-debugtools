@@ -328,7 +328,6 @@ void recv_sk_nl(int sk)
 
 void termSig(int x)
 {
-    fprintf(stderr, "\nexit signal!!\n");
     exit_now = true;
 }
 
@@ -374,36 +373,37 @@ try {
         FD_ZERO(&fds);
         FD_SET(sk_nl, &fds);
 
-        err = select(max_fds, &fds, NULL, NULL, NULL);
-
         if(exit_now)
             break;
+
+        err = select(max_fds, &fds, NULL, NULL, NULL);
 
         if (err < 0) {
             syslog(LOG_INFO, " !!! select error");
             continue;
         }
 
-        try {
+        try
+        {
             if (FD_ISSET(sk_nl, &fds))
                 recv_sk_nl(sk_nl);
-        } catch (std::exception &e) {
+        }
+        catch (std::exception &e)
+        {
             fflush(stdout);
             fprintf(stderr, "Exception cought: %s\n", e.what());
         }
     }
 
-    fflush(stdout);
-    fprintf(stderr, "cleaning-up now: ");
     cn_fork_ignore(sk_nl);
     data_.clear();
-    fprintf(stderr, "done.\n");
 
 } catch (std::exception &e) {
     fflush(stdout);
     fprintf(stderr, "Exception cought: %s\n", e.what());
 }
 
+    fflush(stdout);
     return EXIT_SUCCESS;
 }
 

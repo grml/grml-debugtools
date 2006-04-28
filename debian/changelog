@@ -1,3 +1,10 @@
+grml-debugtools (0.06) unstable; urgency=low
+
+  * event-viewer: cleand up signal handler mess
+  * event-viewer: performance improvments
+
+ -- Michael Gebetsroither <michael.geb@gmx.at>  Fri, 28 Apr 2006 15:52:38 +0200
+
 grml-debugtools (0.05) unstable; urgency=low
 
   * few enhancements to event-viewer (using boost::shard_ptr, refactored
