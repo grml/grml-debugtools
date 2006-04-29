@@ -34,6 +34,10 @@ CONFIG_CONNECTOR=y
 CONFIG_PROC_EVENTS=y
 ..................
 
+EXAMPLES
+--------
+as root: nice -n -10 event-viewer
+
 
 SEE ALSO
 --------
