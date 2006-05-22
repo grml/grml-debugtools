@@ -8,10 +8,8 @@
 
 #include <map>
 #include <string>
-#include <vector>
 #include <algorithm>
 #include <iostream>
-#include <fstream>
 
 #include <glib.h>
 #include <glib/gstdio.h>
@@ -42,7 +40,6 @@
 using gebi::process;
 
 using std::map;
-using std::vector;
 using std::string;
 using std::ifstream;
 using std::cin;
