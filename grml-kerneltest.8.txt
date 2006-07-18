@@ -1,0 +1,76 @@
+GRML-KERNELTEST(8)
+==================
+Michael Gebetsroither <gebi@grml.org>
+
+
+NAME
+----
+grml-kerneltest - Tool to test the linux kernel
+
+
+SYNOPSIS
+--------
+*grml-kerneltest* [OPTIONS] 'action' [kernel-version]
+
+
+DESCRIPTION
+-----------
+*grml-kerneltest* is a program that
+provides an easy way for grml developers to test a development kernel snapshot.
+Thus grml-kerneltest has a few hardcoded values (like url for grml development kernels).
+
+
+ACTIONS
+-------
+*g, get <kernel-version>*::
+    This command downloads the hole development kernel snapshot from http://dufo.tugraz.at/~prokop/grml-kernel/<kernel-version>.
+    This command creates a list of debian packages for the kernel into <kernel-version>.
+
+*i, install <kernel-version>*::
+    Install the hole kernel via dpkg -i (does not take dependencies into account).
+    You could exclude modules through <kernel-version>.iignore (one pattern per line).
+
+*l, load*::
+    This command tries to load and unload all available kernel-modules (may crash the system).
+    Add patterns to exclude modules to ./<kernel-version>.lignore (one per line).
+    /lib/modules/$(uname -r)/modules.dep should be up to date (run depmod -a).
+
+*h, help*::
+  Show the help message.
+
+
+OPTIONS
+-------
+*-h, help*::
+Show summary of options.
+
+*-l (default=30)*::
+    Limit number of kernel-modules to load to 30.
+
+*-c*::
+    Activate terminal-colors (default is to activate it on interactive terminals).
+
+
+EXAMPLES
+--------
+
+*grml-kerneltest -g 2.6.16-grml*::
+    Downloads the hole 2.6.16-grml development kernel snapshot.
+
+*grml-kerneltest -i 2.6.16-grml*::
+    Tries to install kernel 2.6.16-grml (excluding matching patterns from 2.6.16-grml.iignore).
+
+*grml-kerneltest -l 20*::
+    Loads and unloads the first 20 modules from /lib/modules/$(uname -r)/modules.dep.
+
+
+SEE ALSO
+--------
+modprobe(8)
+
+
+AUTHOR
+------
+grml-kerneltest was written by Michael Gebetsroither <michael.geb@gmx.at>.
+
+This manual page was written by Michael Gebetsroither <gebi@grml.org>.
