@@ -93,7 +93,7 @@ function actionInstall
 {
     echo "Installing modules:"
     MODLIST="`grep linux-image "$KVERS"`"
-    MODLIST="${MODLIST} `grep -v "linux-image" "$KVERS"`"
+    MODLIST="${MODLIST}\n`grep -v "linux-image" "$KVERS"`"
     test -e "$KVERS.iignore" && MODLIST="`echo "$MODLIST" |grep -vf "$KVERS.iignore"`"
     echo "$MODLIST" |xargs -r dpkg -E -i
 }
