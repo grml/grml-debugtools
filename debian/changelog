@@ -1,3 +1,12 @@
+grml-debugtools (0.08) unstable; urgency=low
+
+  * NMU:
+    - cleanup of debian/rules (remove unused configre stuff)
+    - Bumb Standard Version to 3.7.2 (no further changes)
+    - Added myself to Uploaders
+
+ -- Michael Prokop <mika@grml.org>  Sat, 11 Nov 2006 20:22:37 +0100
+
 grml-debugtools (0.07) unstable; urgency=low
 
   * fix to install the kernel image also
