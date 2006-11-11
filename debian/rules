@@ -31,7 +31,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
-	rm -f event-viewer sh-wrapper
+	rm -f event-viewer sh-wrapper bench
 
 	dh_clean 
 
