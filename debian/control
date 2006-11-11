@@ -10,8 +10,9 @@ Package: grml-debugtools
 Architecture: any
 Depends: ${shlibs:Depends}, grml-shlib (>= 1.02.07), zsh, curl, grml-etc (>= 0.7-3)
 Description: Various debug related tools
- This tools help in tracking down complicated problems:
+ This tools help in tracking down problems:
  .
-   sh-wrapper - wrapper for /bin/sh which logs information about caller to syslog
-   event-viewer - program to see all fork/exec/exit/uid/gid events
-   bench - simple benchmarking utility
+  * sh-wrapper, a wrapper for /bin/sh which logs information
+                about caller to syslog
+  * event-viewer, a program to see all fork/exec/exit/uid/gid events
+  * bench, a simple benchmarking utility

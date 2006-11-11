@@ -1,8 +1,9 @@
 grml-debugtools (0.08) unstable; urgency=low
 
-  * NMU:
-    - cleanup of debian/rules (remove unused configre stuff)
+  * NMU - the "make lintian happy" release:
+    - Cleanup of debian/rules (remove unused configre stuff)
     - Bumb Standard Version to 3.7.2 (no further changes)
+    - Updated long description
     - Added myself to Uploaders
 
  -- Michael Prokop <mika@grml.org>  Sat, 11 Nov 2006 20:22:37 +0100

@@ -1,10 +1,10 @@
-#!/usr/bin/zsh
+#!/bin/zsh
 # Filename:      grml-ktest
 # Purpose:       Program to do something
 # Authors:       grml-team (grml.org), (c) Michael Gebetsroither <gebi@grml.org>
 # Bug-Reports:   see http://grml.org/bugs/
 # License:       This file is licensed under the GPL v2.
-# Latest change: Thu Apr  6 12:26:20 CEST 2006 [gebi]
+# Latest change: Sam Nov 11 20:27:56 CET 2006 [mika]
 ################################################################################
 
 ###
