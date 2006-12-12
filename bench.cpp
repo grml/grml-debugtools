@@ -22,9 +22,10 @@ static char* to_exec_;
 
 void execChild()
 {
-    if(execlp(to_exec_, to_exec_, (char*)0) < 0)
+    int ret = execlp(to_exec_, to_exec_, (char*)0);
+    if(ret < 0)
         perror("execlp");
-    exit(0);
+    exit(ret);
 }
 
 
@@ -46,13 +47,19 @@ int main(int argc, char *argv[])
     child_pid = fork();
     if(0 == child_pid)
         execChild();
-    sw.stop();
     if(wait4(child_pid, &status, 0, &ru) != child_pid)
         perror("wait4");
+    sw.stop();
+
+    int ret = 0;
+    if(WIFEXITED(status)) {
+        ret = WEXITSTATUS(status);
+    }
     printf("usr: %lds %ldns\n", ru.ru_utime.tv_sec, ru.ru_utime.tv_usec);
     printf("sys: %lds %ldns\n", ru.ru_stime.tv_sec, ru.ru_stime.tv_usec);
     printf("ticks: %lld\n", sw.getTime());
     printf("pagereclaims:\t%ld\n", ru.ru_minflt);
     printf("pagefaults:\t%ld\n", ru.ru_majflt);
+    printf("returned:\t%d\n", ret);
     return 0;
 }
