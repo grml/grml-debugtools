@@ -3,7 +3,7 @@ Section: grml
 Priority: optional
 Maintainer: Michael Gebetsroither <gebi@grml.org>
 Uploaders: Michael Prokop <mika@grml.org>
-Build-Depends: debhelper (>= 4.0.0), libglib2.0-dev, libboost-dev, libstdc++-dev, xsltproc, docbook-xsl, asciidoc, libgebi-dev (>= 0.08)
+Build-Depends: debhelper (>= 4.0.0), libglib2.0-dev, libboost-dev, libstdc++-dev, xsltproc, docbook-xsl, asciidoc, libgebi-dev (>= 0.10)
 Standards-Version: 3.7.2
 
 Package: grml-debugtools
