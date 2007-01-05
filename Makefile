@@ -36,9 +36,9 @@ endif
 
 %.gz : %.txt ;
 	asciidoc -d manpage -b docbook $^
-	sed -i 's/<emphasis role="strong">/<emphasis role="bold">/g' `echo $^ |sed -e 's/.txt/.xml/'`
-	xsltproc /usr/share/xml/docbook/stylesheet/nwalsh/manpages/docbook.xsl `echo $^ |sed -e 's/.txt/.xml/'`
-	gzip -f --best `echo $^ |sed -e 's/.txt//'`
+	sed -i 's/<emphasis role="strong">/<emphasis role="bold">/g' ${^:.txt=.xml}
+	xsltproc --nonet /usr/share/xml/docbook/stylesheet/nwalsh/manpages/docbook.xsl ${^:.txt=.xml}
+	gzip -f --best ${^:.txt=}
 
 
 default: bin doc
