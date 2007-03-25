@@ -2,6 +2,7 @@ grml-debugtools (0.10) unstable; urgency=low
 
   * Use 'libstdc++6-dev | libstdc++-dev' so we can satisfy Build-Depends
     on grml64 as well.
+  * Add g++ to Build-Depends.
 
  -- Michael Prokop <mika@grml.org>  Sun, 25 Mar 2007 11:22:18 +0200
 
