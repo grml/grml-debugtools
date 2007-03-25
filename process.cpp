@@ -68,7 +68,7 @@ void process::searchCmdline_priv()
     tmp = "/proc/";
     tmp.append(boost::lexical_cast<string>(pid_));
     tmp.append("/cmdline");
-    if(!g_file_get_contents(tmp.c_str(), &str, &len, &err)) {
+    if(!g_file_get_contents(tmp.c_str(), &str, (gsize*)&len, &err)) {
         //fprintf(stderr, "Error: %s (%d)\n", err->message, err->code);
         g_error_free(err);
         return;
