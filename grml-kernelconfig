@@ -12,7 +12,7 @@ def parse(config):
         if i.startswith('#'):
             if i.endswith(' is not set'):
                 i = i[2:]
-                (key, none) = i.split(' ', 1)
+                (key, non) = i.split(' ', 1)
                 tmp[key] = None
         elif len(i) == 0:
             pass
