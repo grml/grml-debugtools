@@ -15,6 +15,7 @@ def parse(config):
         else:
             (key, value) = i.split('=', 2)
             tmp[key] = value
+    fd.close()
     return tmp
 
 def diff(a, b):
@@ -23,14 +24,17 @@ def diff(a, b):
 def common(a, b):
     return filter(lambda i: i in b, a.iterkeys())
 
-def action_base(args):
-    f1 = parse(args[0]) 
-    f2 = parse(args[1])
-    c = common(f1, f2)
+def action_multi(fun, args):
+    (f1, f2) = map(parse, args)
+    c = fun(f1, f2)
+    c.sort()
     for i in c:
         print "%s=%s" % (i, f1[i])
 
 if __name__ == "__main__":
     args = sys.argv[1:]
-    if args[0] == "base":
-        action_base(args[1:])
+    cmd = args[0]
+    if cmd == "base":
+        action_multi(common, args[1:])
+    if cmd == "diff":
+        action_multi(diff, args[1:])
