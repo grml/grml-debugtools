@@ -4,19 +4,30 @@ import os
 import sys
 
 def parse(config):
+    """parse a kernel config file into a dict"""
     fd = open(config)
     tmp = {}
     for i in fd:
         i = i.strip()
         if i.startswith('#'):
-            pass
+            if i.endswith(' is not set'):
+                i = i[2:]
+                (key, none) = i.split(' ', 1)
+                tmp[key] = None
         elif len(i) == 0:
             pass
         else:
-            (key, value) = i.split('=', 2)
+            (key, value) = i.split('=', 1)
             tmp[key] = value
     fd.close()
     return tmp
+
+def print_value(k, v):
+    """print config entry"""
+    if v == None:
+        print "# %s is not set" % k
+    else:
+        print "%s=%s" % (k, v)
 
 def diff(a, b):
     return filter(lambda i: i not in b, a.iterkeys())
@@ -29,7 +40,7 @@ def action_multi(fun, args):
     c = fun(f1, f2)
     c.sort()
     for i in c:
-        print "%s=%s" % (i, f1[i])
+        print_value(i, f1[i])
 
 if __name__ == "__main__":
     args = sys.argv[1:]
