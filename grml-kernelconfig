@@ -1,0 +1,36 @@
+#!/usr/bin/python
+
+import os
+import sys
+
+def parse(config):
+    fd = open(config)
+    tmp = {}
+    for i in fd:
+        i = i.strip()
+        if i.startswith('#'):
+            pass
+        elif len(i) == 0:
+            pass
+        else:
+            (key, value) = i.split('=', 2)
+            tmp[key] = value
+    return tmp
+
+def diff(a, b):
+    return filter(lambda i: i not in b, a.iterkeys())
+
+def common(a, b):
+    return filter(lambda i: i in b, a.iterkeys())
+
+def action_base(args):
+    f1 = parse(args[0]) 
+    f2 = parse(args[1])
+    c = common(f1, f2)
+    for i in c:
+        print "%s=%s" % (i, f1[i])
+
+if __name__ == "__main__":
+    args = sys.argv[1:]
+    if args[0] == "base":
+        action_base(args[1:])
