@@ -17,23 +17,17 @@ def read_package_names(input):
     return packages
 
 def get_package_infos(packages):
-    # infos = {name:[deb-size delta, unpacked-size delta], ...}
-    infos = {}
     cache = apt.Cache()
     for i in packages:
         p = cache[i]
         r = p.candidateRecord
-        infos[i] = [int(r['Size']) - p.packageSize, int(r['Installed-Size'])*1024 - p.installedSize]
-    return infos
-
-def show_bloat(infos):
-    for i in infos:
-        (dsize, dusize) = infos[i]
-        print i, dsize/1024, dusize/1024
+        # both in kB
+        diff_size  = int(r['Size']) - p.packageSize
+        diff_isize = int(r['Installed-Size']) - p.installedSize/1024
+        print i, diff_size, diff_isize
 
 for i in sys.stdin:
     if i.startswith('The following packages will be upgraded:'):
         packages = read_package_names(sys.stdin)
-        infos = get_package_infos(packages)
-        show_bloat(infos)
+        get_package_infos(packages)
         break
