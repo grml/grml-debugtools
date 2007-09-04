@@ -1,33 +1,15 @@
 #!/usr/bin/python
-# usage (as root):
-# echo 'n' | apt-get upgrade |./bloatscanner |sort -g -k3 |tail -n50
+# upgrade-bloatscanner |sort -g -k2 |tail -n50
 
 import sys
 import os
 import apt
 
-
-def read_package_names(input):
-    packages = []
-    for i in input:
-        if i.startswith('  '):
-            packages.extend(i.split())
-        else:
-            break
-    return packages
-
-def get_package_infos(packages):
-    cache = apt.Cache()
-    for i in packages:
-        p = cache[i]
+cache = apt.Cache()
+packages = [ i for i in cache if i.isUpgradable == 1 ]
+for p in packages:
         r = p.candidateRecord
         # both in kB
-        diff_size  = int(r['Size']) - p.packageSize
+        # diff_size  = int(r['Size']) - p.packageSize # p.packageSize wrong
         diff_isize = int(r['Installed-Size']) - p.installedSize/1024
-        print i, diff_size, diff_isize
-
-for i in sys.stdin:
-    if i.startswith('The following packages will be upgraded:'):
-        packages = read_package_names(sys.stdin)
-        get_package_infos(packages)
-        break
+        print p.name, diff_isize
