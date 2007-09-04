@@ -45,7 +45,9 @@ PROGS = sh-wrapper \
 MANPAGES = sh-wrapper.8 \
 		   event-viewer.8 \
 		   bench.1 \
-		   grml-kerneltest.8 #grml-kernelconfig upgrade-bloatscanner
+		   grml-kerneltest.8 \
+		   upgrade-bloatscanner.1
+		   #grml-kernelconfig
 
 all: bin doc
 bin: $(PROGS)
@@ -83,6 +85,7 @@ install: all
 	$(install_) -m 644 event-viewer.8.html $(usrdoc)
 	$(install_) -m 644 bench.1.html $(usrdoc)
 	$(install_) -m 644 grml-kerneltest.8.html $(usrdoc)
+	$(install_) -m 644 upgrade-bloatscanner.1.html $(usrdoc)
 	
 	$(install_) -d -m 755 $(man8)
 	$(install_) -m 644 sh-wrapper.8.gz $(man8)
@@ -91,10 +94,11 @@ install: all
 
 	$(install_) -d -m 755 $(man1)
 	$(install_) -m 644 bench.1.gz $(man1)
+	$(install_) -m 644 upgrade-bloatscanner.1.gz $(man1)
 
 
 clean:
 	rm -f $(PROGS) *.o *.so
 	@for i in $(MANPAGES); do \
-		rm -fv $$i.html $$i.xml $$i.gz; done
+		rm -f $$i.html $$i.xml $$i.gz; done
 

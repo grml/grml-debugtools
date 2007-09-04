@@ -1,0 +1,30 @@
+UPGRADE-BLOATSCANNER(1)
+=======================
+Michael Gebetsroither <gebi@grml.org>
+
+
+NAME
+----
+upgrade-bloatscanner - programm to scan for bloat at upgrade
+
+
+SYNOPSIS
+--------
+*upgrade-bloatscanner*
+
+
+DESCRIPTION
+-----------
+*upgrade-bloatscanner* is a program to scan for bloat at upgrade.
+
+It outputs all packages which would be upgraded and there difference in
+installed size.
+
+EXAMPLES
+--------
+*upgrade-bloatscanner |sort -g -k2 |tail -n50*::
+Show the top 50 bloated packages for the next upgrade.
+
+SEE ALSO
+--------
+sh-wrapper(8), even-viewer(8), grml-kerneltest(8)
