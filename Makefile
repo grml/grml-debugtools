@@ -30,36 +30,29 @@ CPPFLAGS += -pipe -O2
 CFLAGS += $(CPPFLAGS)
 endif
 
-
 %.html : %.txt ;
 	asciidoc -b xhtml11 $^
 
 %.gz : %.txt ;
 	asciidoc -d manpage -b docbook $^
-	sed -i 's/<emphasis role="strong">/<emphasis role="bold">/g' ${^:.txt=.xml}
-	xsltproc --nonet /usr/share/xml/docbook/stylesheet/nwalsh/manpages/docbook.xsl ${^:.txt=.xml}
-	gzip -f --best ${^:.txt=}
+	#sed -i 's/<emphasis role="strong">/<emphasis role="bold">/g' `echo $^ |sed -e 's/.txt/.xml/'`
+	xsltproc -nonet /usr/share/xml/docbook/stylesheet/nwalsh/manpages/docbook.xsl `echo $^ |sed -e 's/.txt/.xml/'` &>/dev/null
+	gzip -f --best `echo $^ |sed -e 's/.txt//'`
 
+PROGS = sh-wrapper \
+		event-viewer \
+		bench
+MANPAGES = sh-wrapper.8 \
+		   event-viewer.8 \
+		   bench.1 \
+		   grml-kerneltest.8 #grml-kernelconfig upgrade-bloatscanner
 
-default: bin doc
-
-PROGS = sh-wrapper event-viewer bench
+all: bin doc
 bin: $(PROGS)
 
 doc: doc_man doc_html
-
-doc_html: sh-wrapper.8.html event-viewer.8.html bench.1.html grml-kerneltest.8.html
-sh-wrapper.8.html: sh-wrapper.8.txt
-event-viewer.8.html: event-viewer.8.txt
-bench.1.html: bench.1.txt
-grml-kerneltest.8.html: grml-kerneltest.8.txt
-
-doc_man: sh-wrapper.8.gz event-viewer.8.gz bench.1.gz grml-kerneltest.8.gz
-sh-wrapper.8.gz: sh-wrapper.8.txt
-event-viewer.8.gz: event-viewer.8.txt
-bench.1.gz: bench.1.txt
-grml-kerneltest.8.gz: grml-kerneltest.8.txt
-
+doc_html: $(addsuffix .html, $(MANPAGES))
+doc_man: $(addsuffix .gz, $(MANPAGES))
 
 bench: bench.cpp
 #	$(CXX) $(CPPFLAGS) $(LDFLAGS) bench.cpp -o bench
@@ -73,12 +66,13 @@ event-viewer: event-viewer.cpp process.o
 	$(CXX) $(CPPFLAGS) `pkg-config --cflags glib-2.0` $(LDFLAGS) `pkg-config --libs glib-2.0` $^ -o event-viewer
 
 
-install: default
+install: all
 	$(install_) -d -m 755 $(bin)
 	$(install_) -m 755 sh-wrapper $(bin)
 
 	$(install_) -d -m 755 $(usrbin)
 	$(install_) -m 755 bench $(usrbin)
+	$(install_) -m 755 upgrade-bloatscanner $(usrbin)
 
 	$(install_) -d -m 755 $(usrsbin)
 	$(install_) -m 755 event-viewer $(usrsbin)
@@ -99,9 +93,8 @@ install: default
 	$(install_) -m 644 bench.1.gz $(man1)
 
 
-clean: $(SUBDIRS)
-	rm -f $(PROGS) *.o *.so \
-		sh-wrapper.8.html sh-wrapper.8.xml sh-wrapper.8.gz \
-		event-viewer.8.html event-viewer.8.xml event-viewer.8.gz \
-		bench.1.html bench.1.xml bench.1.gz \
-		grml-kerneltest.8.html grml-kerneltest.8.xml grml-kerneltest.8.gz
+clean:
+	rm -f $(PROGS) *.o *.so
+	@for i in $(MANPAGES); do \
+		rm -fv $$i.html $$i.xml $$i.gz; done
+
