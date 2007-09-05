@@ -1,9 +1,18 @@
+grml-debugtools (0.12) unstable; urgency=low
+
+  [Michael Prokop]
+  * Bump version number and fix changelog according to upload it.
+
+  [Michael Gebetsroither]
+  * added update-bloatscanner to find bloated packages at upgrade
+  * event-viewer: compile fixes
+  * fixed lintian/linda warnings
+
+ -- Michael Prokop <mika@grml.org>  Wed,  5 Sep 2007 11:11:01 +0200
+
 grml-debugtools (0.11) unstable; urgency=low
 
   * Fix compile error on amd64 [Closes: issue173]
-  * added update-bloatscanner to find bloated packages at upgrade
-  * event-viewer: compile fixes
-  * fixed lintian/linda warnings 
 
  -- Michael Gebetsroither <gebi@grml.org>  Wed, 05 Sep 2007 03:24:07 +0200
 
