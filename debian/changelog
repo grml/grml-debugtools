@@ -3,8 +3,9 @@ grml-debugtools (0.11) unstable; urgency=low
   * Fix compile error on amd64 [Closes: issue173]
   * added update-bloatscanner to find bloated packages at upgrade
   * event-viewer: compile fixes
+  * fixed lintian/linda warnings 
 
- -- Michael Gebetsroither <gebi@grml.org>  Wed, 05 Sep 2007 02:56:32 +0200
+ -- Michael Gebetsroither <gebi@grml.org>  Wed, 05 Sep 2007 03:24:07 +0200
 
 grml-debugtools (0.10) unstable; urgency=low
 

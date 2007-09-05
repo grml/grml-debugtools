@@ -31,8 +31,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
-	rm -f event-viewer sh-wrapper bench
-
+	$(MAKE) clean
 	dh_clean 
 
 install: build

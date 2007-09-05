@@ -3,7 +3,7 @@ Section: grml
 Priority: optional
 Maintainer: Michael Gebetsroither <gebi@grml.org>
 Uploaders: Michael Prokop <mika@grml.org>
-Build-Depends: debhelper (>= 4.0.0), libglib2.0-dev, libboost-dev, libstdc++6-dev | libstdc++-dev, xsltproc, docbook-xsl, asciidoc, libgebi-dev (>= 0.10), g++
+Build-Depends: debhelper (>= 4.0.0), libglib2.0-dev, libboost-dev, libstdc++6-dev | libstdc++-dev, xsltproc, docbook-xsl, asciidoc, libgebi-dev (>= 0.10)
 Standards-Version: 3.7.2
 
 Package: grml-debugtools
@@ -17,4 +17,4 @@ Description: Various debug related tools
   * event-viewer, a program to see all fork/exec/exit/uid/gid events
   * bench, a simple benchmarking utility
   * grml-kerneltest, tool to test the kernel
-  * upgrade-bloatscanner, a programm to scan for bloat at upgrade
+  * upgrade-bloatscanner, a program to scan for bloat at upgrade
