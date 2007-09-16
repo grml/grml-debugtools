@@ -2,7 +2,6 @@ UPGRADE-BLOATSCANNER(1)
 =======================
 Michael Gebetsroither <gebi@grml.org>
 
-
 NAME
 ----
 upgrade-bloatscanner - programm to scan for bloat at upgrade
@@ -17,7 +16,7 @@ DESCRIPTION
 -----------
 *upgrade-bloatscanner* is a program to scan for bloat at upgrade.
 
-It outputs all packages which would be upgraded and there difference in
+It outputs all packages which would be upgraded and their difference in
 installed size.
 
 EXAMPLES
