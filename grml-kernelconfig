@@ -29,6 +29,10 @@ def print_value(k, v):
     else:
         print "%s=%s" % (k, v)
 
+def print_values(keys, values):
+    for i in keys:
+        print_value(i, values[i])
+
 def diff(a, b):
     return filter(lambda i: i not in b, a.iterkeys())
 
@@ -39,8 +43,16 @@ def action_multi(fun, args):
     (f1, f2) = map(parse, args)
     c = fun(f1, f2)
     c.sort()
-    for i in c:
-        print_value(i, f1[i])
+    print_values(c, f1)
+
+def action_udiff(args):
+    (f1, f2) = map(parse, args)
+    d1 = diff(f1, f2)
+    d2 = diff(f2, f1)
+    d1.extend(d2)
+    d1.sort()
+    f2.update(f1)
+    print_values(d1, f2)
 
 if __name__ == "__main__":
     args = sys.argv[1:]
@@ -49,3 +61,5 @@ if __name__ == "__main__":
         action_multi(common, args[1:])
     if cmd == "diff":
         action_multi(diff, args[1:])
+    if cmd == "udiff":
+        action_udiff(args[1:])
