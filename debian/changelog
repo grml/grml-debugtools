@@ -1,3 +1,9 @@
+grml-debugtools (0.13) unstable; urgency=low
+
+  * require python-apt >= 0.7.3.1 for upgrade-bloatscanner
+
+ -- Michael Gebetsroither <gebi@grml.org>  Sun, 30 Sep 2007 15:07:15 +0200
+
 grml-debugtools (0.12) unstable; urgency=low
 
   [Michael Prokop]

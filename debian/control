@@ -11,7 +11,7 @@ XS-Vcs-Browser: http://hg.grml.org/grml-debugtools/
 
 Package: grml-debugtools
 Architecture: any
-Depends: ${shlibs:Depends}, grml-shlib (>= 1.02.07), zsh, curl, grml-etc (>= 0.7-3), python, python-apt
+Depends: ${shlibs:Depends}, grml-shlib (>= 1.02.07), zsh, curl, grml-etc (>= 0.7-3), python, python-apt (>=0.7.3.1)
 Description: Various debug related tools
  This tools help in tracking down problems:
  .
