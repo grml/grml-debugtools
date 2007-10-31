@@ -57,9 +57,12 @@ def action_udiff(args):
 if __name__ == "__main__":
     args = sys.argv[1:]
     cmd = args[0]
+    # prints everything in 1 and 2
     if cmd == "base":
         action_multi(common, args[1:])
+    # prints everything in 1 and not in 2
     if cmd == "diff":
         action_multi(diff, args[1:])
+    # prints everyting thats missing in either 1 or 2
     if cmd == "udiff":
         action_udiff(args[1:])
