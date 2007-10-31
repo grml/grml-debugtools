@@ -1,9 +1,23 @@
 #!/usr/bin/python
-# upgrade-bloatscanner |sort -g -k2 |tail -n50
 
 import sys
 import os
 import apt
+
+def printUsage():
+    print """Usage: \"%s\"
+
+It shows the diff in installed-size of all installed debian packages during the
+next upgrade.
+
+USAGE EXAMPLES:
+  - Show the top50:
+      upgrade-bloatscanner |sort -g -k2 |tail -n50
+""" % os.path.basename(sys.argv[0])
+
+if len(sys.argv) >1:
+    printUsage()
+    sys.exit(0)
 
 cache = apt.Cache()
 packages = [ i for i in cache if i.isUpgradable == 1 ]
