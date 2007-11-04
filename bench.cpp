@@ -18,11 +18,12 @@ using namespace gebi;
 
 
 static char* to_exec_;
+static char** args_;
 
 
 void execChild()
 {
-    int ret = execlp(to_exec_, to_exec_, (char*)0);
+    int ret = execvp(to_exec_, args_);
     if(ret < 0)
         perror("execlp");
     exit(ret);
@@ -36,8 +37,9 @@ int main(int argc, char *argv[])
     struct rusage ru;
 
     to_exec_ = NULL;
-    if(argc == 2) {
+    if(argc >= 2) {
         to_exec_ = argv[1];
+        args_ = &argv[1];
     } else {
         fprintf(stderr, "Error: please give me the executable to benchmark\n");
         exit(1);

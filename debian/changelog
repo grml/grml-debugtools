@@ -3,9 +3,10 @@ grml-debugtools (0.13) unstable; urgency=low
   * grml-kernelconfig: added udiff command
   * fix typo in upgrade-bloatscanner.1.txt
   * require python-apt >= 0.7.3.1 for upgrade-bloatscanner
-  * upgrade-bloatscanner: added -h/--help + usage example 
+  * upgrade-bloatscanner: added -h/--help + usage example
+  * bench: forward commandline arguments 
 
- -- Michael Gebetsroither <gebi@grml.org>  Wed, 31 Oct 2007 16:21:12 +0100
+ -- Michael Gebetsroither <gebi@grml.org>  Sun, 04 Nov 2007 11:54:34 +0100
 
 grml-debugtools (0.12) unstable; urgency=low
 
