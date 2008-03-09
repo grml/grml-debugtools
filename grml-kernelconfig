@@ -2,6 +2,8 @@
 
 import os
 import sys
+import optparse
+import inspect
 
 def parse(config):
     """parse a kernel config file into a dict"""
@@ -39,13 +41,22 @@ def diff(a, b):
 def common(a, b):
     return filter(lambda i: i in b, a.iterkeys())
 
-def action_multi(fun, args):
+def common_multi(fun, args):
     (f1, f2) = map(parse, args)
     c = fun(f1, f2)
     c.sort()
     print_values(c, f1)
 
+def action_base(args):
+    '''base - prints everything in 1 AND 2'''
+    common_multi(common, args)
+
+def action_diff(args):
+    '''diff - prints everything in 1 AND NOT in 2'''
+    common_multi(diff, args)
+
 def action_udiff(args):
+    '''udiff - prints everyting thats missing in either 1 or 2'''
     (f1, f2) = map(parse, args)
     d1 = diff(f1, f2)
     d2 = diff(f2, f1)
@@ -54,15 +65,25 @@ def action_udiff(args):
     f2.update(f1)
     print_values(d1, f2)
 
+
 if __name__ == "__main__":
-    args = sys.argv[1:]
+    # actionname -> fun()
+    actions = {}
+    for k,v in globals().copy().iteritems():
+        prefix = 'action_'
+        if k.startswith(prefix):
+            if callable(v):
+                actions[k[len(prefix):]] = v
+    docstrings = [ '\t'+inspect.getdoc(i) for i in actions.itervalues() ]
+    docstrings.sort()
+    usage = "usage: %prog [options] <action> <config1> <config2>\n\n" +\
+            "%prog is a program which helps in kernel config handling\n\n" +\
+            "ACTIONS:\n" + '\n'.join(docstrings)
+    parser = optparse.OptionParser(usage)
+    (opts, args) = parser.parse_args()
     cmd = args[0]
-    # prints everything in 1 and 2
-    if cmd == "base":
-        action_multi(common, args[1:])
-    # prints everything in 1 and not in 2
-    if cmd == "diff":
-        action_multi(diff, args[1:])
-    # prints everyting thats missing in either 1 or 2
-    if cmd == "udiff":
-        action_udiff(args[1:])
+    args = args[1:]
+    if cmd in actions:
+        actions[cmd](args)
+    else:
+        parser.error("no such action: " + cmd)
