@@ -48,8 +48,8 @@ MANPAGES = sh-wrapper.8 \
 		   event-viewer.8 \
 		   bench.1 \
 		   grml-kerneltest.8 \
-		   upgrade-bloatscanner.1
-		   #grml-kernelconfig
+		   upgrade-bloatscanner.1 \
+		   grml-kernelconfig.8
 
 all: bin doc
 bin: $(PROGS)
@@ -81,6 +81,7 @@ install: all
 	$(install_) -d -m 755 $(usrsbin)
 	$(install_) -m 755 event-viewer $(usrsbin)
 	$(install_) -m 755 grml-kerneltest $(usrsbin)
+	$(install_) -m 755 grml-kernelconfig $(usrsbin)
 
 	$(install_) -d -m 755 $(usrdoc)
 	$(install_) -m 644 sh-wrapper.8.html $(usrdoc)
@@ -88,11 +89,13 @@ install: all
 	$(install_) -m 644 bench.1.html $(usrdoc)
 	$(install_) -m 644 grml-kerneltest.8.html $(usrdoc)
 	$(install_) -m 644 upgrade-bloatscanner.1.html $(usrdoc)
+	$(install_) -m 644 grml-kernelconfig.8.html $(usrdoc)
 	
 	$(install_) -d -m 755 $(man8)
 	$(install_) -m 644 sh-wrapper.8.gz $(man8)
 	$(install_) -m 644 event-viewer.8.gz $(man8)
 	$(install_) -m 644 grml-kerneltest.8.gz $(man8)
+	$(install_) -m 644 grml-kernelconfig.8.gz $(man8)
 
 	$(install_) -d -m 755 $(man1)
 	$(install_) -m 644 bench.1.gz $(man1)
