@@ -1,9 +1,9 @@
-grml-debugtools (0.15) UNRELEASED; urgency=low
+grml-debugtools (0.15) unstable; urgency=low
 
   * grml-kernelconfig: added -h/--help
-  * grml-kernelconfig: added manpage 
+  * grml-kernelconfig: added manpage
 
- -- Michael Gebetsroither <gebi@grml.org>  Sun, 09 Mar 2008 07:00:05 +0100
+ -- Michael Gebetsroither <gebi@grml.org>  Sun, 09 Mar 2008 16:33:57 +0100
 
 grml-debugtools (0.14) unstable; urgency=low
 
