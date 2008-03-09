@@ -1,4 +1,4 @@
-GRML-KERNELCONFIG(8)
+GRML-KERNELCONFIG(1)
 ====================
 Michael Gebetsroither <gebi@grml.org>
 
