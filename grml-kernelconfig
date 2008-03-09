@@ -41,6 +41,13 @@ def diff(a, b):
 def common(a, b):
     return filter(lambda i: i in b, a.iterkeys())
 
+def udiff(a, b):
+    d1 = diff(a, b)
+    d2 = diff(b, a)
+    d1.extend(d2)
+    d1.sort()
+    return d1
+
 def common_multi(fun, args):
     (f1, f2) = map(parse, args)
     c = fun(f1, f2)
@@ -58,12 +65,9 @@ def action_diff(args):
 def action_udiff(args):
     '''udiff - prints everyting thats missing in either 1 or 2'''
     (f1, f2) = map(parse, args)
-    d1 = diff(f1, f2)
-    d2 = diff(f2, f1)
-    d1.extend(d2)
-    d1.sort()
+    d = udiff(f1, f2)
     f2.update(f1)
-    print_values(d1, f2)
+    print_values(d, f2)
 
 
 if __name__ == "__main__":
