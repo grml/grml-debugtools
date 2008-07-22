@@ -46,11 +46,6 @@ function appendDest
     fi
 }
 
-function mounted_by_me
-{
-    stringInString "$1" "$MOUNTED_"
-}
-
 function mountit
 {
     local type_="$1" # type _or_ src
