@@ -5,6 +5,11 @@ import sys
 import optparse
 import inspect
 
+def die(msg, parser):
+    sys.stderr.write("Error: "+msg+"\n")
+    parser.print_help()
+    sys.exit(1)
+
 def parse(config):
     """parse a kernel config file into a dict"""
     fd = open(config)
@@ -90,7 +95,14 @@ if __name__ == "__main__":
             "ACTIONS:\n" + '\n'.join(docstrings)
     parser = optparse.OptionParser(usage)
     (opts, args) = parser.parse_args()
+    if len(args) <1:
+        die("no argument given", parser)
     cmd = args[0]
+    if cmd == "help":
+        parser.print_help()
+        sys.exit(0)
+    if len(args) <3:
+        die("wrong number of arguments", parser)
     args = args[1:]
     if cmd in actions:
         actions[cmd](args)
