@@ -27,15 +27,6 @@ $PROG_NAME__ is a chroot wrapper with proc/sys/pts/dev fs handling
 EOT
 }
 
-function stringInString
-{
-    local to_test_="$1"   # matching pattern
-    local source_="$2"    # string to search in
-
-    case "$source_" in *$to_test_*) return 0;; esac
-    return 1
-}
-
 function storeMounts
 {
     local to_append_="$1"
