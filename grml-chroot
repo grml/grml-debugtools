@@ -20,7 +20,7 @@ function die
 function printUsage
 {
     cat <<EOT
-Usage: "$PROG_NAME_" [OPTIONS] action [kernel-version]
+Usage: "$PROG_NAME_" <chroot target>
 
 $PROG_NAME__ is a chroot wrapper with proc/sys/pts/dev fs handling
 
@@ -36,7 +36,7 @@ function stringInString
     return 1
 }
 
-function appendDest
+function storeMounts
 {
     local to_append_="$1"
     if [[ $MOUNTED_ == "" ]]; then
@@ -59,7 +59,7 @@ function mountit
     else
         all_options_="-t $type_ none"
     fi
-    mount $all_options_ "${DEST_}/$dest_" && appendDest "$dest_"
+    mount $all_options_ "${DEST_}/$dest_" && storeMounts "$dest_"
 }
 
 function umount_all
