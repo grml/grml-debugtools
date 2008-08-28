@@ -73,7 +73,7 @@ while getopts "h" opt; do
 done
 shift $(($OPTIND - 1))
 
-if (( $# < 2 )); then
+if (( $# < 1 )); then
     die "Wrong number of arguments."
 fi
 
@@ -86,6 +86,6 @@ fi
 
 mountit "proc"  "proc"
 mountit "sysfs" "sys"
-mountit "dev"   "dev"   "--bind"
+mountit "/dev"   "dev"   "--bind"
 chroot "$DEST_" /bin/bash
 umount_all
