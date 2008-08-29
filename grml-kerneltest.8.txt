@@ -55,7 +55,7 @@ EXAMPLES
 --------
 
 *grml-kerneltest -g 2.6.16-grml*::
-    Downloads the hole 2.6.16-grml development kernel snapshot.
+    Downloads the whole 2.6.16-grml development kernel snapshot.
 
 *grml-kerneltest -i 2.6.16-grml*::
     Tries to install kernel 2.6.16-grml (excluding matching patterns from 2.6.16-grml.iignore).
