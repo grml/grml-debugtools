@@ -3,6 +3,7 @@
 #include <boost/lexical_cast.hpp>
 
 #include <glib.h>
+#include <cstring>
 
 
 using std::string;
