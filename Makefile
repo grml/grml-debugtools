@@ -34,12 +34,8 @@ endif
 	asciidoc -b xhtml11 $^
 
 %.gz : %.txt ;
-	asciidoc -d manpage -b docbook $^
-	#sed -i 's/<emphasis role="strong">/<emphasis role="bold">/g' `echo $^ |sed -e 's/.txt/.xml/'`
-	xsltproc -nonet /usr/share/xml/docbook/stylesheet/nwalsh/manpages/docbook.xsl `echo $^ |sed -e 's/.txt/.xml/'` >/dev/null
-	# ugly hack to avoid '.sp' at the end of a sentence or paragraph:
-	sed -i 's/\.sp//' `echo $^ |sed -e 's/.txt//'`
-	gzip -f --best `echo $^ |sed -e 's/.txt//'`
+	a2x -f manpage $^ 2>&1 |grep -v '^Note: ' >&2
+	gzip -f --best $(patsubst %.txt,%, $^)
 
 PROGS = sh-wrapper \
 		event-viewer \
