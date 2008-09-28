@@ -23,7 +23,8 @@ Thus grml-kerneltest has a few hardcoded values (like url for grml development k
 ACTIONS
 -------
 *g, get <kernel-version>*::
-    This command downloads the hole development kernel snapshot from http://dufo.tugraz.at/~prokop/grml-kernel/<kernel-version>.
+    This command downloads the whole development kernel snapshot from
+    http://dufo.tugraz.at/~prokop/grml-kernel/kernel-version.
     This command creates a list of debian packages for the kernel into <kernel-version>.
 
 *i, install <kernel-version>*::
