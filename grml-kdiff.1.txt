@@ -1,21 +1,21 @@
-GRML-KERNELCONFIG(1)
+GRML-KDIFF(1)
 ====================
 Michael Gebetsroither <gebi@grml.org>
 
 
 NAME
 ----
-grml-kernelconfig - Tool which helps in kernel config handling
+grml-kdiff - Tool which helps in kernel config handling
 
 
 SYNOPSIS
 --------
-*grml-kernelconfig* [OPTIONS] 'action' <source1> <source2>
+*grml-kdiff* [OPTIONS] 'action' <source1> <source2>
 
 
 DESCRIPTION
 -----------
-*grml-kernelconfig* is a program that
+*grml-kdiff* is a program that
 helps you in kernel configuration handling, such as showing you the common
 configuration options between 2 kernel configs.
 
@@ -41,7 +41,7 @@ Show summary of options.
 EXAMPLES
 --------
 
-*grml-kernelconfig diff config-2.6.25-grml64 config-2.6.25-grml*::
+*grml-kdiff diff config-2.6.25-grml64 config-2.6.25-grml*::
     Shows every config option which is available in grml64 kernel and is
     missing in the normal kernel.
 
@@ -53,6 +53,6 @@ grml-kerneltest(8)
 
 AUTHOR
 ------
-grml-kernelconfig was written by Michael Gebetsroither <michael.geb@gmx.at>.
+grml-kdiff was written by Michael Gebetsroither <michael.geb@gmx.at>.
 
 This manual page was written by Michael Gebetsroither <gebi@grml.org>.
