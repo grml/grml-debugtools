@@ -1,6 +1,7 @@
 grml-debugtools (0.16) UNRELEASED; urgency=low
 
   * renamed grml-kernelconfig to grml-kdiff
+  * bump standards version to 3.7.3 
 
  -- Michael Gebetsroither <gebi@grml.org>  Sun, 28 Sep 2008 12:52:42 +0200
 
