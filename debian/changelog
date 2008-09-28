@@ -1,9 +1,10 @@
-grml-debugtools (0.16) UNRELEASED; urgency=low
+grml-debugtools (0.16) unstable; urgency=low
 
   * renamed grml-kernelconfig to grml-kdiff
   * bump standards version to 3.7.3 
+  * process.cpp: compile fix for g++ 4.3 
 
- -- Michael Gebetsroither <gebi@grml.org>  Sun, 28 Sep 2008 12:52:42 +0200
+ -- Michael Gebetsroither <gebi@grml.org>  Sun, 28 Sep 2008 13:31:03 +0200
 
 grml-debugtools (0.15) unstable; urgency=low
 
