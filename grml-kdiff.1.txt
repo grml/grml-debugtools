@@ -1,5 +1,5 @@
 GRML-KDIFF(1)
-====================
+=============
 Michael Gebetsroither <gebi@grml.org>
 
 

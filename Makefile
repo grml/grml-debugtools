@@ -95,7 +95,7 @@ install: all
 	$(install_) -d -m 755 $(man1)
 	$(install_) -m 644 bench.1.gz $(man1)
 	$(install_) -m 644 upgrade-bloatscanner.1.gz $(man1)
-	$(install_) -m 644 grml-diff.1.gz $(man1)
+	$(install_) -m 644 grml-kdiff.1.gz $(man1)
 
 
 clean:
