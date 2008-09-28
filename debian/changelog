@@ -1,3 +1,9 @@
+grml-debugtools (0.16) UNRELEASED; urgency=low
+
+  * renamed grml-kernelconfig to grml-kdiff
+
+ -- Michael Gebetsroither <gebi@grml.org>  Sun, 28 Sep 2008 12:52:42 +0200
+
 grml-debugtools (0.15) unstable; urgency=low
 
   * grml-kernelconfig: added -h/--help

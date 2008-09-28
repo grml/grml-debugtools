@@ -11,8 +11,6 @@ usrbin = $(usr)/bin
 usrsbin = $(usr)/sbin
 usrshare = $(usr)/share/$(name_)
 usrdoc = $(usr)/share/doc/$(name_)
-man8 = $(usr)/share/man/man8/
-man1 = $(usr)/share/man/man1/
 
 #CPPFLAGS = -pipe -Wall -O2 -s -DNDEBUG -funroll-loops -floop-optimize -march=i686 -mtune=i686 -pedantic
 
@@ -40,19 +38,16 @@ endif
 PROGS = sh-wrapper \
 		event-viewer \
 		bench
-MANPAGES = sh-wrapper.8 \
-		   event-viewer.8 \
-		   bench.1 \
-		   grml-kerneltest.8 \
-		   upgrade-bloatscanner.1 \
-		   grml-kdiff.1
+
 
 all: bin doc
 bin: $(PROGS)
 
 doc: doc_man doc_html
-doc_html: $(addsuffix .html, $(MANPAGES))
-doc_man: $(addsuffix .gz, $(MANPAGES))
+doc_html:
+	make -C doc $^
+doc_man:
+	make -C doc $^
 
 bench: bench.cpp
 #	$(CXX) $(CPPFLAGS) $(LDFLAGS) bench.cpp -o bench
@@ -80,26 +75,9 @@ install: all
 	$(install_) -m 755 grml-kerneltest $(usrsbin)
 
 	$(install_) -d -m 755 $(usrdoc)
-	$(install_) -m 644 sh-wrapper.8.html $(usrdoc)
-	$(install_) -m 644 event-viewer.8.html $(usrdoc)
-	$(install_) -m 644 bench.1.html $(usrdoc)
-	$(install_) -m 644 grml-kerneltest.8.html $(usrdoc)
-	$(install_) -m 644 upgrade-bloatscanner.1.html $(usrdoc)
-	$(install_) -m 644 grml-kdiff.1.html $(usrdoc)
-	
-	$(install_) -d -m 755 $(man8)
-	$(install_) -m 644 sh-wrapper.8.gz $(man8)
-	$(install_) -m 644 event-viewer.8.gz $(man8)
-	$(install_) -m 644 grml-kerneltest.8.gz $(man8)
-
-	$(install_) -d -m 755 $(man1)
-	$(install_) -m 644 bench.1.gz $(man1)
-	$(install_) -m 644 upgrade-bloatscanner.1.gz $(man1)
-	$(install_) -m 644 grml-kdiff.1.gz $(man1)
-
+	$(install_) -m 644 $(wildcard doc/*.html) $(usrdoc)
 
 clean:
 	rm -f $(PROGS) *.o *.so
-	@for i in $(MANPAGES); do \
-		rm -f $$i.html $$i.xml $$i.gz; done
+	make -C doc clean
 
