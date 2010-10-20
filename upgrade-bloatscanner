@@ -10,7 +10,8 @@ def printUsage():
 It shows the difference in installed-size of all installed debian packages during the
 next upgrade in MB.
 
-By default only the top 15 bloated packages are shown
+On interactive use only the most 15 bloated packages are shown.
+In a pipe information about all packages is output to stdout.
 """ % os.path.basename(sys.argv[0])
 
 if len(sys.argv) >1:
@@ -18,12 +19,18 @@ if len(sys.argv) >1:
     sys.exit(0)
 
 cache = apt.Cache()
+is_tty = os.isatty(sys.stdout.fileno())
 packages = [ i for i in cache if i.is_upgradable == 1 ]
 package_upgrade_size = [] # [(size, package_name), ...]
 for p in packages:
         diff_isize = p.candidate.installed_size/1024 - p.installed.installed_size/1024
         package_upgrade_size.append((diff_isize, p.name))
 
-package_upgrade_size.sort(key=lambda i: i.__getitem__(0), reverse=True)
-for i in reversed(package_upgrade_size[:15]):
+package_upgrade_size.sort(key=lambda i: i.__getitem__(0))
+if is_tty:
+    output_list = package_upgrade_size[-15:len(package_upgrade_size)]
+else:
+    output_list = package_upgrade_size
+
+for i in output_list:
     print "%s %s" %(i)
