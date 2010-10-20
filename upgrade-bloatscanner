@@ -18,13 +18,10 @@ if len(sys.argv) >1:
     sys.exit(0)
 
 cache = apt.Cache()
-packages = [ i for i in cache if i.isUpgradable == 1 ]
+packages = [ i for i in cache if i.is_upgradable == 1 ]
 package_upgrade_size = [] # [(size, package_name), ...]
 for p in packages:
-        r = p.candidateRecord
-        # both in kB
-        # diff_size  = int(r['Size']) - p.packageSize # p.packageSize wrong
-        diff_isize = int(r['Installed-Size']) - p.installedSize/1024
+        diff_isize = p.candidate.installed_size/1024 - p.installed.installed_size/1024
         package_upgrade_size.append((diff_isize, p.name))
 
 package_upgrade_size.sort(key=lambda i: i.__getitem__(0), reverse=True)
