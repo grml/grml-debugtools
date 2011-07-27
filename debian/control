@@ -5,9 +5,11 @@ Maintainer: Michael Gebetsroither <gebi@grml.org>
 Uploaders: Michael Prokop <mika@grml.org>
 Build-Depends: debhelper (>= 4.0.0), libglib2.0-dev, libboost-dev | libboost1.35-dev, libstdc++6-dev | libstdc++-dev, xsltproc, docbook-xsl, asciidoc, libgebi-dev (>= 0.10)
 Standards-Version: 3.7.3
-Homepage: http://hg.grml.org/grml-debugtools/
-XS-Vcs-hg: http://hg.grml.org/grml-debugtools/
-XS-Vcs-Browser: http://hg.grml.org/grml-debugtools/
+Homepage: http://git.grml.org/?p=grml-debugtools.git
+Vcs-git: git://git.grml.org/grml-debugtools.git
+Vcs-Browser: http://git.grml.org/?p=grml-debugtools.git
+Origin: Grml
+Bugs: mailto:bugs@grml.org
 
 Package: grml-debugtools
 Architecture: any
